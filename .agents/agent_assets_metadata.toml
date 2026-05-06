@@ -6,8 +6,32 @@ uri = "file://attached_assets/generated_images/metacleaner-icon-source.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "NYoWyvf5nLuJiRHyPpQaL"
+uri = "file://static/icon-512.png"
+type = "image"
+title = "proposal builder pwa icon"
+
+[[generated]]
+id = "cUXiCGlWbFajusBHwna5q"
+uri = "file://static/icon-maskable-512.png"
+type = "image"
+title = "proposal builder maskable pwa icon"
+
 [[outputs]]
 id = "jogORAUkZ3r1BsdDhsMCY"
 uri = "file://marketing.txt"
 type = "text"
 title = "Marketing Copy — Image MetaData Removal Tool"
+
+[[outputs]]
+id = "ltRsLpjqEy-q0H6iOlLLr"
+uri = "file://static/icon-512.png"
+type = "image"
+title = "PWA Icon (512x512)"
+
+[[outputs]]
+id = "Fhj67-uLT6ECGFjh3wZmg"
+uri = "file://static/icon-maskable-512.png"
+type = "image"
+title = "Maskable PWA Icon (512x512)"
