@@ -24,9 +24,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ── Load template from URL param ─────────────────── */
   const params = new URLSearchParams(window.location.search);
-  const tplId = params.get('template');
-  if (tplId) {
-    fetch('/api/templates/' + tplId)
+  const tplIdParam = params.get('template');
+  if (tplIdParam) {
+    fetch('/api/templates/' + tplIdParam)
       .then(r => r.json())
       .then(t => {
         quill.clipboard.dangerouslyPasteHTML(t.content || '');
@@ -38,30 +38,36 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('loadTemplateBtn').addEventListener('click', function () {
     const sel = document.getElementById('templateSelect');
     const tid = sel.value;
-    if (!tid) { showNotification('Please select a template first.', 'warning'); return; }
-    if (quill.root.innerHTML.trim().length > 10) {
-      if (!confirm('This will replace the current content. Continue?')) return;
+    if (!tid) {
+      showNotification('Please select a template first.', 'warning');
+      return;
     }
-    fetch('/api/templates/' + tid)
-      .then(r => r.json())
-      .then(t => {
-        let html = t.content || '';
-        html = replacePlaceholders(html);
-        quill.clipboard.dangerouslyPasteHTML(html);
-        showNotification('Template loaded: ' + t.name, 'success');
-      })
-      .catch(() => showNotification('Failed to load template.', 'error'));
+
+    const html = quill.root.innerHTML.trim();
+    const hasContent = html !== '' && html !== '<p><br></p>';
+
+    if (hasContent) {
+      _showInlineConfirm(
+        'tpl-replace-bar',
+        document.getElementById('loadTemplateBtn'),
+        '<i class="bi bi-exclamation-triangle-fill me-1 text-warning"></i>This will replace your current editor content.',
+        'Replace Content',
+        () => _doLoadTemplate(tid)
+      );
+      return;
+    }
+    _doLoadTemplate(tid);
   });
 
   /* ── AI: Generate ──────────────────────────────────── */
   document.getElementById('aiGenerateBtn').addEventListener('click', function () {
     const btn = this;
-    const data = collectFormData();
+    const data = _collectFormData();
     if (!data.client_name || !data.project_title) {
       showNotification('Fill in Client Name and Project Title first.', 'warning');
       return;
     }
-    setAILoading(btn, true, 'Generating…');
+    _setAILoading(btn, true, 'Generating…');
     fetch('/api/ai/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -71,10 +77,10 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(res => {
         if (res.error) { showNotification(res.error, 'error'); return; }
         quill.clipboard.dangerouslyPasteHTML(res.content || '');
-        showNotification('AI proposal generated!', 'success');
+        showNotification('AI proposal generated successfully!', 'success');
       })
       .catch(() => showNotification('AI request failed. Check your connection.', 'error'))
-      .finally(() => setAILoading(btn, false, 'Generate Proposal'));
+      .finally(() => _setAILoading(btn, false, 'Generate Proposal'));
   });
 
   /* ── AI: Improve ───────────────────────────────────── */
@@ -85,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
       showNotification('Write something in the editor first.', 'warning');
       return;
     }
-    setAILoading(btn, true, 'Improving…');
+    _setAILoading(btn, true, 'Improving…');
     fetch('/api/ai/improve', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -98,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showNotification('Proposal improved by AI!', 'success');
       })
       .catch(() => showNotification('AI request failed.', 'error'))
-      .finally(() => setAILoading(btn, false, 'Improve Writing'));
+      .finally(() => _setAILoading(btn, false, 'Improve Writing'));
   });
 
   /* ── Score button (editor page) ────────────────────── */
@@ -135,28 +141,68 @@ function insertSection(sid) {
     });
 }
 
-/* ── Helpers ─────────────────────────────────────────── */
-function collectFormData() {
+/* ── Private helpers ─────────────────────────────────── */
+function _doLoadTemplate(tid) {
+  fetch('/api/templates/' + tid)
+    .then(r => r.json())
+    .then(t => {
+      let html = t.content || '';
+      html = _replacePlaceholders(html);
+      quill.clipboard.dangerouslyPasteHTML(html);
+      showNotification('Template loaded: ' + t.name, 'success');
+    })
+    .catch(() => showNotification('Failed to load template.', 'error'));
+}
+
+function _collectFormData() {
   return {
-    client_name:   (document.querySelector('[name=client_name]')   || {}).value || (proposalData || {}).client_name || '',
-    project_title: (document.querySelector('[name=project_title]') || {}).value || (proposalData || {}).project_title || '',
-    description:   (document.querySelector('[name=description]')   || {}).value || (proposalData || {}).description || '',
-    price:         (document.querySelector('[name=price]')         || {}).value || (proposalData || {}).price || '',
-    timeline:      (document.querySelector('[name=timeline]')      || {}).value || (proposalData || {}).timeline || '',
+    client_name:   (document.querySelector('[name=client_name]')   || {}).value || (typeof proposalData !== 'undefined' ? proposalData.client_name : '') || '',
+    project_title: (document.querySelector('[name=project_title]') || {}).value || (typeof proposalData !== 'undefined' ? proposalData.project_title : '') || '',
+    description:   (document.querySelector('[name=description]')   || {}).value || (typeof proposalData !== 'undefined' ? proposalData.description : '') || '',
+    price:         (document.querySelector('[name=price]')         || {}).value || (typeof proposalData !== 'undefined' ? proposalData.price : '') || '',
+    timeline:      (document.querySelector('[name=timeline]')      || {}).value || (typeof proposalData !== 'undefined' ? proposalData.timeline : '') || '',
   };
 }
 
-function replacePlaceholders(html) {
-  const data = collectFormData();
+function _replacePlaceholders(html) {
+  const d = _collectFormData();
   return html
-    .replace(/\{\{\s*client_name\s*\}\}/g,   data.client_name   || '{{ client_name }}')
-    .replace(/\{\{\s*project_title\s*\}\}/g, data.project_title || '{{ project_title }}')
-    .replace(/\{\{\s*price\s*\}\}/g,         data.price         || '{{ price }}');
+    .replace(/\{\{\s*client_name\s*\}\}/g,   d.client_name   || '{{ client_name }}')
+    .replace(/\{\{\s*project_title\s*\}\}/g, d.project_title || '{{ project_title }}')
+    .replace(/\{\{\s*price\s*\}\}/g,         d.price         || '{{ price }}');
 }
 
-function setAILoading(btn, loading, label) {
+function _setAILoading(btn, loading, label) {
   btn.disabled = loading;
+  const icon = btn.id === 'aiGenerateBtn' ? 'magic' : 'arrow-up-circle';
   btn.innerHTML = loading
-    ? `<span class="ai-loading"></span> ${label}`
-    : `<i class="bi bi-${btn.id === 'aiGenerateBtn' ? 'magic' : 'arrow-up-circle'} me-1"></i> ${label}`;
+    ? `<span class="ai-loading"></span>${label}`
+    : `<i class="bi bi-${icon} me-1"></i>${label}`;
+}
+
+/* ── Generic inline confirmation bar ────────────────────
+   anchorId  — unique id for the bar element
+   anchor    — DOM element to insert after
+   message   — HTML string shown as the prompt
+   confirmLabel — button text
+   onConfirm — callback on confirm
+*/
+function _showInlineConfirm(anchorId, anchor, message, confirmLabel, onConfirm) {
+  // Toggle off if already showing
+  const existing = document.getElementById(anchorId);
+  if (existing) { existing.remove(); return; }
+
+  const bar = document.createElement('div');
+  bar.id = anchorId;
+  bar.className = 'inline-confirm-bar mt-2';
+  bar.innerHTML = `
+    <p class="small mb-2">${message}</p>
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm btn-danger flex-grow-1 ic-yes">${confirmLabel}</button>
+      <button class="btn btn-sm btn-outline-secondary flex-grow-1 ic-no">Cancel</button>
+    </div>`;
+  anchor.insertAdjacentElement('afterend', bar);
+
+  bar.querySelector('.ic-yes').addEventListener('click', () => { bar.remove(); onConfirm(); });
+  bar.querySelector('.ic-no').addEventListener('click', () => bar.remove());
 }

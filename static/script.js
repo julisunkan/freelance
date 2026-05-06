@@ -1,28 +1,29 @@
-/* ── Notification System ─────────────────────────────── */
+/* ── Inline Notification System ──────────────────────── */
 function showNotification(message, type) {
   type = type || 'info';
-  const icons = { success: '✓', error: '✕', info: 'ℹ', warning: '⚠' };
-  const container = document.getElementById('toast-container');
+  const bsType  = { success: 'success', error: 'danger', info: 'info', warning: 'warning' }[type] || 'info';
+  const iconMap  = { success: 'check-circle-fill', error: 'x-circle-fill', info: 'info-circle-fill', warning: 'exclamation-triangle-fill' };
+
+  const container = document.getElementById('inline-messages');
   if (!container) return;
 
-  const toast = document.createElement('div');
-  toast.className = `toast-notif ${type}`;
-  toast.innerHTML = `
-    <span style="font-size:1rem;flex-shrink:0">${icons[type] || 'ℹ'}</span>
-    <span style="flex:1">${message}</span>
-    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
-  `;
-  container.appendChild(toast);
+  const el = document.createElement('div');
+  el.className = `alert alert-${bsType} alert-dismissible d-flex align-items-center gap-2 mb-2 fade show`;
+  el.role = 'alert';
+  el.innerHTML = `
+    <i class="bi bi-${iconMap[type] || 'info-circle-fill'} flex-shrink-0"></i>
+    <span class="flex-grow-1">${message}</span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+  container.prepend(el);
 
+  // Auto-dismiss after 4.5 s
   setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(16px)';
-    toast.style.transition = 'all .3s ease';
-    setTimeout(() => toast.remove(), 320);
+    const inst = bootstrap.Alert.getOrCreateInstance(el);
+    if (inst) inst.close(); else el.remove();
   }, 4500);
 }
 
-/* ── Score handler ──────────────────────────────────── */
+/* ── Score handler (proposal_view page) ──────────────── */
 document.addEventListener('DOMContentLoaded', function () {
   const scoreBtn = document.getElementById('scoreBtn');
   if (scoreBtn) {

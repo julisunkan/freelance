@@ -178,16 +178,14 @@ body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; ba
 /* ── Proposal meta bar ──────────────────────────────── */
 .proposal-meta-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 
-/* ── Toast Notifications ─────────────────────────────── */
-#toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; max-width: 340px; pointer-events: none; }
-.toast-notif { display: flex; align-items: flex-start; gap: 10px; padding: 14px 16px; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,.12); font-size: .875rem; font-weight: 500; animation: toastIn .25s ease; pointer-events: all; }
-.toast-notif.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
-.toast-notif.error   { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
-.toast-notif.info    { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
-.toast-notif.warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
-.toast-close { margin-left: auto; cursor: pointer; opacity: .5; border: none; background: none; font-size: 1rem; line-height: 1; }
-.toast-close:hover { opacity: 1; }
-@keyframes toastIn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
+/* ── Inline Notifications ────────────────────────────── */
+#inline-messages { margin-bottom: 4px; }
+#inline-messages .alert { border-radius: 10px; font-size: .875rem; font-weight: 500; animation: alertIn .2s ease; }
+@keyframes alertIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Inline Confirm Bar ──────────────────────────────── */
+.inline-confirm-bar { background: #fef9f0; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 14px; }
+.inline-confirm-bar p { color: #374151; }
 
 /* ── Admin ──────────────────────────────────────────── */
 .code-block { background: #f8f7ff; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-size: .83rem; }

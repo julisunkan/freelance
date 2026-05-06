@@ -81,7 +81,6 @@
     <!-- Score -->
     <div class="card-panel mb-3">
       <h6 class="card-panel-title"><i class="bi bi-bar-chart me-1"></i>Proposal Score</h6>
-      <div id="scoreArea" class="text-center text-muted small mb-2">Click to analyze</div>
       <button class="btn btn-outline-secondary btn-sm w-100" id="scoreBtn" data-pid="{{ proposal.id }}">
         <i class="bi bi-graph-up me-1"></i> Analyze Proposal
       </button>
@@ -102,10 +101,12 @@
     </div>
     {% endif %}
 
-    <!-- Delete & Report -->
+    <!-- Danger Zone -->
     <div class="card-panel">
       <h6 class="card-panel-title text-danger"><i class="bi bi-exclamation-triangle me-1"></i>Danger Zone</h6>
       <div class="d-grid gap-2">
+
+        <!-- Report -->
         <button class="btn btn-outline-warning btn-sm" data-bs-toggle="collapse" data-bs-target="#reportForm">
           <i class="bi bi-flag me-1"></i> Report Proposal
         </button>
@@ -116,12 +117,26 @@
             <button type="submit" class="btn btn-warning btn-sm w-100">Submit Report</button>
           </form>
         </div>
-        <form action="/proposals/{{ proposal.id }}/delete" method="POST"
-          onsubmit="return confirm('Delete this proposal? This cannot be undone.')">
-          <button type="submit" class="btn btn-outline-danger btn-sm w-100">
-            <i class="bi bi-trash me-1"></i> Delete Proposal
-          </button>
-        </form>
+
+        <!-- Delete — inline two-step, no browser popup -->
+        <button type="button" class="btn btn-outline-danger btn-sm" id="deleteToggleBtn">
+          <i class="bi bi-trash me-1"></i> Delete Proposal
+        </button>
+        <div id="deleteConfirmBar" class="inline-confirm-bar" style="display:none">
+          <p class="small mb-2">
+            <i class="bi bi-exclamation-triangle-fill me-1 text-danger"></i>
+            This will permanently delete the proposal and all its data.
+          </p>
+          <div class="d-flex gap-2">
+            <form action="/proposals/{{ proposal.id }}/delete" method="POST" class="flex-grow-1">
+              <button type="submit" class="btn btn-danger btn-sm w-100">Yes, Delete</button>
+            </form>
+            <button type="button" class="btn btn-outline-secondary btn-sm flex-grow-1" id="deleteCancelBtn">
+              Cancel
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -147,45 +162,39 @@
 <script>
 function copyShareLink() {
   const input = document.getElementById('shareLink');
-  navigator.clipboard.writeText(input.value).then(() => showNotification('Share link copied!', 'success'));
+  navigator.clipboard.writeText(input.value).then(() => showNotification('Share link copied to clipboard!', 'success'));
 }
 
-document.getElementById('scoreBtn')?.addEventListener('click', function () {
+/* Inline delete confirmation — no browser popup */
+const deleteToggleBtn = document.getElementById('deleteToggleBtn');
+const deleteConfirmBar = document.getElementById('deleteConfirmBar');
+const deleteCancelBtn  = document.getElementById('deleteCancelBtn');
+
+deleteToggleBtn.addEventListener('click', function () {
+  const isVisible = deleteConfirmBar.style.display !== 'none';
+  deleteConfirmBar.style.display = isVisible ? 'none' : 'block';
+  deleteToggleBtn.classList.toggle('btn-outline-danger', isVisible);
+  deleteToggleBtn.classList.toggle('btn-danger', !isVisible);
+});
+
+deleteCancelBtn.addEventListener('click', function () {
+  deleteConfirmBar.style.display = 'none';
+  deleteToggleBtn.classList.add('btn-outline-danger');
+  deleteToggleBtn.classList.remove('btn-danger');
+});
+
+/* Score modal */
+document.getElementById('scoreBtn').addEventListener('click', function () {
   const pid = this.dataset.pid;
   const modal = new bootstrap.Modal(document.getElementById('scoreModal'));
-  document.getElementById('scoreModalBody').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>';
+  document.getElementById('scoreModalBody').innerHTML =
+    '<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>';
   modal.show();
   fetch('/api/score/' + pid).then(r => r.json()).then(data => {
     renderScoreModal(data);
   }).catch(() => {
-    document.getElementById('scoreModalBody').innerHTML = '<p class="text-danger">Failed to score proposal.</p>';
+    document.getElementById('scoreModalBody').innerHTML = '<p class="text-danger text-center">Failed to score proposal.</p>';
   });
 });
-
-function renderScoreModal(data) {
-  const color = data.score >= 80 ? '#22c55e' : data.score >= 60 ? '#f59e0b' : data.score >= 40 ? '#f97316' : '#ef4444';
-  const fb = (data.feedback || []).map(f => `<li class="mb-1">${f}</li>`).join('');
-  document.getElementById('scoreModalBody').innerHTML = `
-    <div class="text-center mb-3">
-      <div class="score-circle" style="--score-color:${color}">
-        <span class="score-num">${data.score}</span>
-        <span class="score-denom">/100</span>
-      </div>
-      <div class="fw-bold mt-2 fs-5">${data.grade}</div>
-      <p class="text-muted small">${data.summary}</p>
-    </div>
-    <div class="score-breakdown mb-3">
-      ${Object.entries(data.breakdown||{}).map(([k,v])=>`
-        <div class="mb-2">
-          <div class="d-flex justify-content-between small mb-1">
-            <span class="text-capitalize fw-semibold">${k}</span><span>${v}/25</span>
-          </div>
-          <div class="progress" style="height:6px">
-            <div class="progress-bar" style="width:${(v/25)*100}%;background:${color}"></div>
-          </div>
-        </div>`).join('')}
-    </div>
-    ${fb ? `<ul class="small text-muted list-unstyled border-top pt-3">${fb}</ul>` : ''}`;
-}
 </script>
 {% endblock %}

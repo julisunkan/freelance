@@ -22,12 +22,28 @@
         <button class="btn btn-sm btn-outline-primary" onclick="editSection({{ s.id }}, {{ s.name|tojson }}, {{ s.content|tojson }})">
           <i class="bi bi-pencil"></i>
         </button>
-        <button class="btn btn-sm btn-outline-danger" onclick="deleteSection({{ s.id }})">
+        <button class="btn btn-sm btn-outline-danger" onclick="toggleDeleteConfirm({{ s.id }}, this)">
           <i class="bi bi-trash"></i>
         </button>
       </div>
     </div>
     <div class="section-card-preview">{{ s.content|striptags|truncate(120) }}</div>
+    <!-- Inline delete confirmation — no browser popup -->
+    <div id="del-confirm-{{ s.id }}" class="inline-confirm-bar mx-3 mb-3" style="display:none">
+      <p class="small mb-2">
+        <i class="bi bi-exclamation-triangle-fill me-1 text-danger"></i>
+        Delete "<strong>{{ s.name }}</strong>"? This cannot be undone.
+      </p>
+      <div class="d-flex gap-2">
+        <button class="btn btn-danger btn-sm flex-grow-1" onclick="doDeleteSection({{ s.id }})">
+          Yes, Delete
+        </button>
+        <button class="btn btn-outline-secondary btn-sm flex-grow-1"
+          onclick="document.getElementById('del-confirm-{{ s.id }}').style.display='none'">
+          Cancel
+        </button>
+      </div>
+    </div>
   </div>
   {% endfor %}
 </div>
@@ -109,7 +125,7 @@ document.getElementById('addSectionModal').addEventListener('shown.bs.modal', ()
 function saveNewSection() {
   const name = document.getElementById('newSectionName').value.trim();
   const content = addQuill ? addQuill.root.innerHTML : '';
-  if (!name || !content) { showNotification('Name and content are required.', 'error'); return; }
+  if (!name || !content) { showNotification('Section name and content are required.', 'error'); return; }
   fetch('/api/sections', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -118,7 +134,7 @@ function saveNewSection() {
     if (d.error) { showNotification(d.error, 'error'); return; }
     bootstrap.Modal.getInstance(document.getElementById('addSectionModal')).hide();
     showNotification('Section created!', 'success');
-    setTimeout(() => location.reload(), 800);
+    setTimeout(() => location.reload(), 900);
   });
 }
 
@@ -134,8 +150,8 @@ function editSection(id, name, content) {
 }
 
 function saveEditSection() {
-  const id = document.getElementById('editSectionId').value;
-  const name = document.getElementById('editSectionName').value.trim();
+  const id      = document.getElementById('editSectionId').value;
+  const name    = document.getElementById('editSectionName').value.trim();
   const content = editQuill ? editQuill.root.innerHTML : '';
   fetch('/api/sections/' + id, {
     method: 'PUT',
@@ -144,16 +160,24 @@ function saveEditSection() {
   }).then(r => r.json()).then(() => {
     bootstrap.Modal.getInstance(document.getElementById('editSectionModal')).hide();
     showNotification('Section updated!', 'success');
-    setTimeout(() => location.reload(), 800);
+    setTimeout(() => location.reload(), 900);
   });
 }
 
-function deleteSection(id) {
-  if (!confirm('Delete this section?')) return;
+/* Show/hide the inline delete confirmation bar — no browser popup */
+function toggleDeleteConfirm(id, btn) {
+  const bar = document.getElementById('del-confirm-' + id);
+  const isVisible = bar.style.display !== 'none';
+  bar.style.display = isVisible ? 'none' : 'block';
+  btn.classList.toggle('btn-outline-danger', isVisible);
+  btn.classList.toggle('btn-danger', !isVisible);
+}
+
+function doDeleteSection(id) {
   fetch('/api/sections/' + id, { method: 'DELETE' }).then(() => {
     document.getElementById('sec-' + id).remove();
     showNotification('Section deleted.', 'success');
-  });
+  }).catch(() => showNotification('Failed to delete section.', 'error'));
 }
 </script>
 {% endblock %}
