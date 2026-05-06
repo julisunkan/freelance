@@ -1,0 +1,272 @@
+Build a full-stack web application using Python Flask called:
+
+"Online ID Validator (AI-assisted)"
+
+# CORE PURPOSE
+The app allows users to upload identity documents (front ID, back ID, optional selfie) and performs:
+- OCR extraction of text
+- Structured field extraction
+- Image quality analysis
+- Duplicate detection
+- Risk scoring (LOW / MEDIUM / HIGH)
+- AI-powered validation and correction using Groq API
+
+The system is NOT a login-based app. It has:
+- Public upload interface
+- Hidden admin panel at /julisunkan
+
+---
+
+# TECH STACK
+- Python Flask
+- SQLite (SQLAlchemy)
+- OpenCV (image analysis)
+- pytesseract (OCR)
+- PIL (image handling)
+- Groq AI API (LLaMA 3 models)
+- face_recognition (optional face match)
+- hashlib (duplicate detection)
+- HTML/CSS/JS frontend
+- PWA support (manifest + service worker)
+
+---
+
+# MAIN FEATURES
+
+## 1. USER UPLOAD SYSTEM
+- Upload:
+  - Front ID image (required)
+  - Back ID image (optional)
+  - Selfie image (optional)
+- Store files in /uploads
+- Save metadata in SQLite
+
+---
+
+## 2. OCR PROCESSING
+- Extract text using pytesseract
+- Clean OCR output
+- Store raw text in DB
+
+---
+
+## 3. STRUCTURED DATA EXTRACTION
+Extract:
+- full_name
+- date_of_birth
+- id_number
+- expiry_date
+
+Use regex fallback if AI is unavailable.
+
+---
+
+## 4. IMAGE QUALITY ANALYSIS
+Use OpenCV to detect:
+- blur level
+- low resolution
+- image noise
+Return an image quality score.
+
+---
+
+## 5. DUPLICATE DETECTION
+- Hash uploaded images using SHA256
+- Detect repeated uploads
+
+---
+
+## 6. RISK SCORING ENGINE
+Compute risk level based on:
+- image quality
+- missing fields
+- OCR errors
+- face mismatch (if selfie provided)
+
+Output:
+- LOW
+- MEDIUM
+- HIGH
+
+---
+
+## 7. GROQ AI INTEGRATION (IMPORTANT)
+
+Admin can set Groq API key in settings page.
+
+Use Groq to:
+### A. Improve OCR extraction
+Return corrected structured JSON:
+{
+  name,
+  dob,
+  id_number,
+  expiry_date,
+  notes
+}
+
+### B. Fraud analysis
+Return:
+{
+  risk_level,
+  reasons,
+  inconsistencies
+}
+
+Use model:
+llama3-70b-8192
+
+---
+
+## 8. ADMIN PANEL (NO LOGIN)
+
+Route:
+`/julisunkan`
+
+Features:
+- View all uploaded ID records
+- View images + extracted data
+- Edit:
+  - extracted text
+  - structured JSON
+  - risk level
+- Button: "AI Auto-Fix (Groq)"
+- Button: "Recalculate Risk using AI"
+
+---
+
+## 9. ADMIN SETTINGS PAGE
+
+Route:
+`/julisunkan/settings`
+
+Features:
+- Save Groq API key into SQLite
+- Update API key anytime
+
+---
+
+## 10. FILE STRUCTURE
+
+Create this structure:
+
+id-validator/
+│
+├── app.py
+├── models.py
+├── config.py
+├── requirements.txt
+│
+├── utils/
+│   ├── ocr.py
+│   ├── image_checks.py
+│   ├── scoring.py
+│   ├── groq_ai.py
+│   ├── face_match.py
+│   ├── hashing.py
+│
+├── templates/
+│   ├── index.html
+│   ├── result.html
+│   ├── admin.html
+│   ├── edit.html
+│   ├── settings.html
+│
+├── static/
+│   ├── sw.js
+│   ├── manifest.json
+│   ├── app.js
+│   ├── styles.css
+│
+├── uploads/
+└── instance/app.db
+
+---
+
+## 11. PWA REQUIREMENTS
+
+- Add manifest.json
+- Add service worker (sw.js)
+- App must be installable on mobile
+- Cache static assets
+- Works offline for UI only
+
+---
+
+## 12. DATABASE MODELS
+
+IDRecord:
+- id
+- filename_front
+- filename_back
+- filename_selfie
+- extracted_text
+- structured_data (JSON string)
+- risk_level
+- file_hash
+- created_at
+
+Settings:
+- id
+- groq_api_key
+
+---
+
+## 13. ROUTES
+
+Public:
+- GET / → upload page
+- POST /upload → process ID
+- GET /result/<id>
+
+Admin:
+- GET /julisunkan
+- GET/POST /julisunkan/edit/<id>
+- POST /julisunkan/ai-fix/<id>
+- POST /julisunkan/ai-risk/<id>
+- GET/POST /julisunkan/settings
+
+---
+
+## 14. AI MODULE (Groq)
+
+Create utils/groq_ai.py:
+
+Functions:
+- ai_extract_and_fix(text, api_key)
+- ai_risk_analysis(text, structured_data, api_key)
+
+Must return JSON only.
+
+---
+
+## 15. UI REQUIREMENTS
+
+- Simple Bootstrap or clean HTML
+- Admin table view for records
+- Image preview in admin
+- Editable text areas
+- Buttons for AI actions
+
+---
+
+## 16. SECURITY NOTES
+
+- No login system (intentional)
+- Admin route is hidden but accessible
+- Do not expose API key publicly in frontend
+
+---
+
+## OUTPUT EXPECTATION
+
+Generate:
+- Fully working Flask app
+- SQLite DB integration
+- Functional Groq AI integration (mock if key missing)
+- Clean modular code
+- Basic but complete UI
+- PWA support
+
+Ensure the app runs immediately in Replit with:
+`python app.py`

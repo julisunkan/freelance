@@ -11,3 +11,7 @@ python-docx
 reportlab
 requests
 werkzeug
+numpy
+opencv-python-headless
+pytesseract
+sqlalchemy

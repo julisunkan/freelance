@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — ID Validator</title>
+  <link rel="stylesheet" href="{{ request.script_root }}/static/styles.css" />
+</head>
+<body class="admin-body">
+  <header class="site-header admin-header">
+    <div class="header-inner">
+      <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#1e3a5f"/><rect x="6" y="10" width="20" height="13" rx="2" fill="#fff" opacity=".9"/><circle cx="11" cy="16" r="3" fill="#1e3a5f"/><rect x="16" y="14" width="8" height="2" rx="1" fill="#1e3a5f" opacity=".5"/><rect x="16" y="17" width="5" height="2" rx="1" fill="#1e3a5f" opacity=".5"/></svg>
+        <span>Admin Panel</span>
+      </div>
+      <nav class="admin-nav">
+        <a href="{{ request.script_root }}/julisunkan?token={{ token }}">Records</a>
+        <a href="{{ request.script_root }}/julisunkan/settings?token={{ token }}">Settings</a>
+        <a href="{{ request.script_root }}/" target="_blank">Public Site</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <div class="admin-toolbar">
+      <h1>All ID Records <span class="count-badge">{{ records | length }}</span></h1>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    {% if not records %}
+      <div class="empty-state">
+        <p>No records yet. Upload some ID documents from the <a href="{{ request.script_root }}/">public page</a>.</p>
+      </div>
+    {% else %}
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Preview</th>
+            <th>Name</th>
+            <th>ID Number</th>
+            <th>Risk</th>
+            <th>Duplicate</th>
+            <th>Submitted</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record, structured in records %}
+          <tr>
+            <td>{{ record.id }}</td>
+            <td>
+              {% if record.filename_front %}
+                <img src="{{ request.script_root }}/uploads/{{ record.filename_front }}" class="thumb" alt="ID" />
+              {% else %}—{% endif %}
+            </td>
+            <td>{{ structured.get('full_name') or '—' }}</td>
+            <td>{{ structured.get('id_number') or '—' }}</td>
+            <td><span class="risk-badge risk-{{ record.risk_level | lower }}">{{ record.risk_level }}</span></td>
+            <td>{% if record.is_duplicate %}<span class="dup-badge">YES</span>{% else %}No{% endif %}</td>
+            <td>{{ record.created_at.strftime('%Y-%m-%d %H:%M') if record.created_at else '—' }}</td>
+            <td class="action-col">
+              <a href="{{ request.script_root }}/julisunkan/edit/{{ record.id }}?token={{ token }}" class="btn btn-sm btn-secondary">Edit</a>
+              <form method="POST" action="{{ request.script_root }}/julisunkan/delete/{{ record.id }}?token={{ token }}" style="display:inline" onsubmit="return confirm('Delete this record?')">
+                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </main>
+</body>
+</html>

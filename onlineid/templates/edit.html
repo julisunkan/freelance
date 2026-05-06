@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Record #{{ record.id }} — ID Validator</title>
+  <link rel="stylesheet" href="{{ request.script_root }}/static/styles.css" />
+</head>
+<body class="admin-body">
+  <header class="site-header admin-header">
+    <div class="header-inner">
+      <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#1e3a5f"/><rect x="6" y="10" width="20" height="13" rx="2" fill="#fff" opacity=".9"/><circle cx="11" cy="16" r="3" fill="#1e3a5f"/><rect x="16" y="14" width="8" height="2" rx="1" fill="#1e3a5f" opacity=".5"/><rect x="16" y="17" width="5" height="2" rx="1" fill="#1e3a5f" opacity=".5"/></svg>
+        <span>Edit Record #{{ record.id }}</span>
+      </div>
+      <nav class="admin-nav">
+        <a href="{{ request.script_root }}/julisunkan?token={{ token }}">← All Records</a>
+        <a href="{{ request.script_root }}/julisunkan/settings?token={{ token }}">Settings</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <div class="edit-grid">
+      <div class="card">
+        <h2>Document Images</h2>
+        <div class="image-row">
+          {% if record.filename_front %}
+          <div class="img-wrap">
+            <span class="img-label">Front ID</span>
+            <img src="{{ request.script_root }}/uploads/{{ record.filename_front }}" alt="Front" />
+          </div>
+          {% endif %}
+          {% if record.filename_back %}
+          <div class="img-wrap">
+            <span class="img-label">Back ID</span>
+            <img src="{{ request.script_root }}/uploads/{{ record.filename_back }}" alt="Back" />
+          </div>
+          {% endif %}
+          {% if record.filename_selfie %}
+          <div class="img-wrap">
+            <span class="img-label">Selfie</span>
+            <img src="{{ request.script_root }}/uploads/{{ record.filename_selfie }}" alt="Selfie" />
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>AI Actions</h2>
+        <div class="ai-actions">
+          <form method="POST" action="{{ request.script_root }}/julisunkan/ai-fix/{{ record.id }}?token={{ token }}">
+            <button type="submit" class="btn btn-ai">🧠 AI Auto-Fix (Groq)</button>
+            <small>Re-extracts and corrects structured fields using AI.</small>
+          </form>
+          <form method="POST" action="{{ request.script_root }}/julisunkan/ai-risk/{{ record.id }}?token={{ token }}">
+            <button type="submit" class="btn btn-ai">⚖️ Recalculate Risk using AI</button>
+            <small>AI fraud analysis and risk reclassification.</small>
+          </form>
+        </div>
+        <div class="risk-display">
+          <span>Current Risk: </span>
+          <span class="risk-badge risk-{{ record.risk_level | lower }}">{{ record.risk_level }}</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Edit Record</h2>
+        <form method="POST" action="{{ request.script_root }}/julisunkan/edit/{{ record.id }}?token={{ token }}">
+          <div class="form-group">
+            <label>Risk Level</label>
+            <select name="risk_level" class="form-select">
+              {% for lvl in ['LOW', 'MEDIUM', 'HIGH', 'UNKNOWN'] %}
+              <option value="{{ lvl }}" {% if record.risk_level == lvl %}selected{% endif %}>{{ lvl }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Structured Data (JSON)</label>
+            <textarea name="structured_data" rows="8" class="form-textarea mono">{{ record.structured_data or '{}' }}</textarea>
+          </div>
+          <div class="form-group">
+            <label>Raw OCR Text</label>
+            <textarea name="extracted_text" rows="10" class="form-textarea mono">{{ record.extracted_text or '' }}</textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

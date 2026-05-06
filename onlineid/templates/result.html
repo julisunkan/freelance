@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Validation Result — Online ID Validator</title>
+  <link rel="manifest" href="{{ request.script_root }}/static/manifest.json" />
+  <link rel="stylesheet" href="{{ request.script_root }}/static/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="{{ request.script_root }}/" class="logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#1e3a5f"/><rect x="6" y="10" width="20" height="13" rx="2" fill="#fff" opacity=".9"/><circle cx="11" cy="16" r="3" fill="#1e3a5f"/><rect x="16" y="14" width="8" height="2" rx="1" fill="#1e3a5f" opacity=".5"/><rect x="16" y="17" width="5" height="2" rx="1" fill="#1e3a5f" opacity=".5"/></svg>
+        <span>Online ID Validator</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="result-header">
+      <h1>Validation Result</h1>
+      <span class="risk-badge risk-{{ record.risk_level | lower }}">{{ record.risk_level }} RISK</span>
+    </div>
+
+    {% if record.is_duplicate %}
+    <div class="alert alert-warning">⚠️ Duplicate detected — this document has been submitted before.</div>
+    {% endif %}
+
+    <div class="result-grid">
+      <div class="card">
+        <h2>Uploaded Images</h2>
+        <div class="image-row">
+          {% if record.filename_front %}
+          <div class="img-wrap">
+            <span class="img-label">Front ID</span>
+            <img src="{{ request.script_root }}/uploads/{{ record.filename_front }}" alt="Front ID" />
+          </div>
+          {% endif %}
+          {% if record.filename_back %}
+          <div class="img-wrap">
+            <span class="img-label">Back ID</span>
+            <img src="{{ request.script_root }}/uploads/{{ record.filename_back }}" alt="Back ID" />
+          </div>
+          {% endif %}
+          {% if record.filename_selfie %}
+          <div class="img-wrap">
+            <span class="img-label">Selfie</span>
+            <img src="{{ request.script_root }}/uploads/{{ record.filename_selfie }}" alt="Selfie" />
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Extracted Fields</h2>
+        <table class="data-table">
+          <tr><th>Full Name</th><td>{{ structured.get('full_name') or '—' }}</td></tr>
+          <tr><th>Date of Birth</th><td>{{ structured.get('date_of_birth') or '—' }}</td></tr>
+          <tr><th>ID Number</th><td>{{ structured.get('id_number') or '—' }}</td></tr>
+          <tr><th>Expiry Date</th><td>{{ structured.get('expiry_date') or '—' }}</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Raw OCR Text</h2>
+        <pre class="ocr-output">{{ record.extracted_text or 'No text extracted.' }}</pre>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <a href="{{ request.script_root }}/" class="btn btn-secondary">Validate Another</a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>Online ID Validator &mdash; AI-Assisted Document Analysis</p>
+  </footer>
+</body>
+</html>
