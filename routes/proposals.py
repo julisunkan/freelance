@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, abort
 import models
 
 proposals_bp = Blueprint('proposals', __name__)
@@ -75,6 +75,8 @@ def view_proposal(pid):
 
 @proposals_bp.route('/proposals/<int:pid>/delete', methods=['POST'])
 def delete_proposal(pid):
+    if not models.get_proposal(pid):
+        abort(404)
     models.delete_proposal(pid)
     flash('Proposal deleted.', 'success')
     return redirect(url_for('proposals.dashboard'))

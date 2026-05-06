@@ -156,7 +156,7 @@ def _seed_templates(c):
 <h2>My Writing Philosophy</h2>
 <p>Every piece I write is thoroughly researched, optimized for search engines, and written in your brand's unique voice. I don't believe in filler content — every word earns its place.</p>
 <h2>Deliverables & Timeline</h2>
-<p>Timeline: {{ project_title }}<br>Investment: <strong>${{ price }}</strong></p>"""),
+<p>Timeline: {{ timeline }}<br>Investment: <strong>${{ price }}</strong></p>"""),
 
         ("SEO Optimization Package", "seo", """<h1>SEO Optimization Proposal</h1>
 <p>Dear {{ client_name }},</p>

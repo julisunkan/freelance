@@ -17,7 +17,7 @@ def api_score(pid):
 
 @api_bp.route('/api/ai/generate', methods=['POST'])
 def api_ai_generate():
-    data = request.get_json(force=True)
+    data = request.get_json(force=True) or {}
     api_key = models.get_setting('groq_api_key', '')
     if not api_key:
         return jsonify({'error': 'Groq API key not configured. Visit /julisunkan?token=julisunkan to set it.'}), 400
@@ -27,12 +27,57 @@ def api_ai_generate():
 
 @api_bp.route('/api/ai/improve', methods=['POST'])
 def api_ai_improve():
-    data = request.get_json(force=True)
+    data = request.get_json(force=True) or {}
     api_key = models.get_setting('groq_api_key', '')
     if not api_key:
         return jsonify({'error': 'Groq API key not configured. Visit /julisunkan?token=julisunkan to set it.'}), 400
     result = improve_proposal_content(data.get('content', ''), api_key)
     return jsonify(result)
+
+
+@api_bp.route('/api/sections', methods=['GET'])
+def api_get_sections():
+    return jsonify(models.get_all_sections())
+
+
+@api_bp.route('/api/sections', methods=['POST'])
+def api_create_section():
+    data = request.get_json(force=True) or {}
+    name = data.get('name', '').strip()
+    content = data.get('content', '').strip()
+    if not name or not content:
+        return jsonify({'error': 'name and content are required'}), 400
+    sid = models.create_section({'name': name, 'content': content})
+    return jsonify({'id': sid, 'ok': True}), 201
+
+
+@api_bp.route('/api/sections/<int:sid>', methods=['GET'])
+def api_get_section(sid):
+    s = models.get_section(sid)
+    if not s:
+        return jsonify({'error': 'Not found'}), 404
+    return jsonify(s)
+
+
+@api_bp.route('/api/sections/<int:sid>', methods=['PUT'])
+def api_update_section(sid):
+    existing = models.get_section(sid)
+    if not existing:
+        return jsonify({'error': 'Not found'}), 404
+    data = request.get_json(force=True) or {}
+    models.update_section(sid, {
+        'name':    data.get('name', existing['name']),
+        'content': data.get('content', existing['content']),
+    })
+    return jsonify({'ok': True})
+
+
+@api_bp.route('/api/sections/<int:sid>', methods=['DELETE'])
+def api_delete_section(sid):
+    if not models.get_section(sid):
+        return jsonify({'error': 'Not found'}), 404
+    models.delete_section(sid)
+    return jsonify({'ok': True})
 
 
 @api_bp.route('/api/templates/<int:tid>')

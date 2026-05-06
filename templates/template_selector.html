@@ -90,7 +90,7 @@ function previewTemplate(tid) {
   currentTid = tid;
   document.getElementById('previewModalBody').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>';
   document.getElementById('previewUseBtn').href = '/proposals/new?template=' + tid;
-  new bootstrap.Modal(document.getElementById('previewModal')).show();
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('previewModal')).show();
   fetch('/api/templates/' + tid).then(r => r.json()).then(t => {
     document.getElementById('previewModalTitle').textContent = t.name;
     document.getElementById('previewModalBody').innerHTML = t.content;
