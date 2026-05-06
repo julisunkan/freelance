@@ -23,27 +23,6 @@ function showNotification(message, type) {
   }, 4500);
 }
 
-/* ── Score handler (proposal_view page) ──────────────── */
-document.addEventListener('DOMContentLoaded', function () {
-  const scoreBtn = document.getElementById('scoreBtn');
-  if (scoreBtn) {
-    scoreBtn.addEventListener('click', function () {
-      const pid = this.dataset.pid;
-      if (!pid) return;
-      const modal = new bootstrap.Modal(document.getElementById('scoreModal'));
-      document.getElementById('scoreModalBody').innerHTML =
-        '<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>';
-      modal.show();
-      fetch('/api/score/' + pid)
-        .then(r => r.json())
-        .then(data => renderScoreModal(data))
-        .catch(() => {
-          document.getElementById('scoreModalBody').innerHTML =
-            '<p class="text-danger text-center">Failed to score proposal.</p>';
-        });
-    });
-  }
-});
 
 function renderScoreModal(data) {
   const color = data.score >= 80 ? '#22c55e'
