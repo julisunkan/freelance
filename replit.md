@@ -1,71 +1,72 @@
-# Image MetaData Removal Tool
+# Freelancer Proposal Builder
 
-## Overview
-A privacy-focused web app to detect and remove EXIF metadata from images (JPG, PNG, WEBP). Built with Flask, Pillow, piexif, geopy, and APScheduler.
+A single-user Flask web app for creating, editing, scoring, and exporting freelance proposals with AI generation via Groq.
 
-## Features
-- Upload single or multiple images (drag & drop, browse, or Ctrl+V paste from clipboard)
-- EXIF metadata extraction and display
-- Privacy risk scoring (LOW / MEDIUM / HIGH) based on GPS, device info, timestamps
-- Privacy risk score chart — session history bar chart per image
-- GPS map preview (Google Maps embed) + reverse geocoding via geopy/Nominatim
-- Batch GPS map — Leaflet + OpenStreetMap multi-marker map for bulk uploads with GPS
-- Side-by-side metadata diff table — Before | Removed/Kept | After
-- Metadata CSV export — download a full field-by-field report as .csv
-- Before vs after image comparison slider with savings stats
-- Remove ALL metadata, GPS only, or Custom Fields (field-level checkbox editor)
-- Custom metadata editor — select exactly which EXIF fields to remove
-- Format conversion — output as JPEG, PNG, or WebP regardless of input format
-- Resize on clean — limit output image to a max width
-- Optional image compression with quality slider
-- Bulk processing with ZIP download
-- Session history with re-download; "Get Original" undo button per entry
-- PWA support (manifest.json + service worker, cache `imgmeta-v3`)
-- API endpoint: POST /api/clean
-- Auto-deletion of files after 1 hour (APScheduler safety-net)
-
-## Tech Stack
-- **Backend**: Python 3, Flask 3.1.1
-- **Image processing**: Pillow 11.2.1, piexif 1.1.3
-- **Geocoding**: geopy 2.4.1 (Nominatim)
-- **Scheduler**: APScheduler 3.10.4
-- **Maps**: Google Maps embed (single image GPS), Leaflet + OpenStreetMap (batch GPS)
-
-## Project Structure
-```
-app.py                  Flask application entry point
-main.py                 WSGI entry point
-requirements.txt
-templates/
-  index.html            Main single-page UI (Leaflet CDN included)
-static/
-  style.css             Dark theme UI
-  script.js             Frontend logic (all 9 features)
-  icon-192.png          PWA icon
-  icon-512.png          PWA icon
-  favicon.ico / favicon.png
-uploads/                User-uploaded files (auto-deleted)
-cleaned/                Processed/cleaned files
-utils/
-  metadata.py           EXIF extraction + extract_metadata_fields()
-  gps.py                GPS coordinate extraction and reverse geocoding
-  risk.py               Privacy risk score calculation
-  cleaner.py            remove_all_metadata / remove_gps_only / remove_custom_fields
-  compressor.py         Image compression
-  zip_utils.py          Bulk ZIP creation
-  preview.py            Base64 preview generation
-  cleanup.py            File auto-deletion logic
-```
-
-## API
-- `POST /upload`      — upload image(s), returns metadata + metadata_fields + GPS + risk
-- `POST /clean`       — clean single image (mode, output_format, max_width, fields_to_remove)
-- `POST /bulk-clean`  — clean batch, returns ZIP (mode, output_format, max_width)
-- `GET  /download/<f>` — serve cleaned file (deletes after read)
-- `GET  /download-zip/<f>` — serve ZIP (deletes after read)
-- `POST /api/clean`   — programmatic API (image file + mode + quality)
-
-## Running
+## Run & Operate
 ```
 python main.py
 ```
+No required env vars — Groq API key is stored in the SQLite `settings` table via the Admin panel.
+
+## Stack
+- **Backend**: Python 3, Flask 3.1.1
+- **Database**: SQLite (freelancer.db in project root)
+- **PDF export**: ReportLab 4.2.5
+- **DOCX export**: python-docx 1.1.2
+- **AI**: Groq API (llama3-70b-8192) via `requests`
+- **Frontend**: Bootstrap 5.3 CDN + Bootstrap Icons CDN + Quill JS 1.3 CDN
+
+## Where things live
+```
+app.py              Flask app factory, blueprint registration
+main.py             Entry point
+models.py           All SQLite schema, helpers, and 10 seeded templates
+routes/
+  proposals.py      CRUD, public share, sections page
+  admin.py          /julisunkan admin panel (token-protected)
+  export_routes.py  PDF / DOCX / TXT download endpoints
+  api.py            Score, AI generate/improve, sections/templates AJAX
+services/
+  ai_service.py     Groq API calls
+  pdf_service.py    ReportLab PDF generation
+  docx_service.py   python-docx DOCX generation
+  txt_service.py    Plain-text export
+  scoring_service.py  0–100 score with feedback
+templates/          Jinja2 HTML (base, dashboard, editor, proposal_view,
+                    template_selector, sections, admin, reports,
+                    public_view, 404, 500)
+static/
+  style.css         Custom CSS (sidebar layout, indigo brand)
+  script.js         Notification system + score modal
+  editor.js         Quill editor, AI buttons, template/section loading
+  sw.js             PWA service worker
+  manifest.json     PWA manifest
+```
+
+## Architecture decisions
+- No authentication — single-user tool; admin protected by secret token (`julisunkan`)
+- ReportLab used for PDF (pure Python, no system deps like WeasyPrint requires)
+- Groq API key stored in DB `settings` table, never in code or env vars exposed to frontend
+- All exports are server-side `send_file` — no client-side blob downloads
+- 10 templates seeded on first run only (`COUNT(*) == 0` guard)
+
+## Product
+- Dashboard with stats (total, accepted, sent, acceptance rate) and status filters
+- Proposal CRUD with Quill WYSIWYG editor and placeholder support (`{{ client_name }}` etc.)
+- Load any of 10 professional templates or insert reusable sections
+- AI: generate full proposal or improve existing text (requires Groq API key)
+- Proposal scoring (0–100) across clarity, structure, pricing, call-to-action
+- Export to PDF, DOCX, or TXT with export history log
+- Shareable public link per proposal (no-auth view, tracks view count)
+- Report proposals; admin reviews/ignores via `/julisunkan?token=julisunkan`
+- PWA manifest + service worker for offline shell access
+
+## User preferences
+- Admin route: `/julisunkan?token=julisunkan` — no login required
+- Brand color: indigo `#4f46e5`
+- Sidebar layout (dark `#1e1b4b` sidebar, light content area)
+
+## Gotchas
+- Delete `freelancer.db` to reset all data and re-seed templates
+- Quill editor content is synced to hidden `<input name="content">` on form submit via `editor.js`
+- `editor.js` is loaded only on editor pages; `script.js` is loaded on all pages

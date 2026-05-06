@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}Templates — ProposalBuilder{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Proposal Templates</h1>
+    <p class="page-sub">{{ templates|length }} professional templates ready to use</p>
+  </div>
+  <a href="/proposals/new" class="btn btn-primary">
+    <i class="bi bi-plus-lg me-1"></i> New Proposal
+  </a>
+</div>
+
+<div class="templates-grid">
+  {% for t in templates %}
+  <div class="template-card">
+    <div class="template-icon">
+      {% set icons = {'web':'globe2','mobile':'phone','design':'palette','content':'pen','seo':'search','social':'chat-dots','ecommerce':'cart3','uxui':'display','data':'bar-chart-line','consulting':'briefcase'} %}
+      <i class="bi bi-{{ icons.get(t.category, 'file-earmark-text') }}"></i>
+    </div>
+    <div class="template-name">{{ t.name }}</div>
+    <div class="template-meta text-muted small">{{ t.category|capitalize if t.category else 'General' }}</div>
+    <div class="template-actions mt-3 d-flex gap-2">
+      <a href="/proposals/new?template={{ t.id }}" class="btn btn-primary btn-sm flex-grow-1">
+        <i class="bi bi-play me-1"></i> Use
+      </a>
+      <button class="btn btn-outline-secondary btn-sm" onclick="previewTemplate({{ t.id }})">
+        <i class="bi bi-eye"></i>
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" onclick="editTemplate({{ t.id }}, {{ t.name|tojson }})">
+        <i class="bi bi-pencil"></i>
+      </button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="previewModalTitle">Template Preview</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body proposal-content-view" id="previewModalBody">
+        <div class="text-center py-4"><div class="spinner-border text-primary"></div></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        <a href="#" id="previewUseBtn" class="btn btn-primary">
+          <i class="bi bi-play me-1"></i> Use This Template
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Template Modal -->
+<div class="modal fade" id="editTemplateModal" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Template: <span id="editTemplateName"></span></h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="editQuillEditor" style="min-height:320px;"></div>
+        <input type="hidden" id="editTemplateId">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" onclick="saveTemplate()">
+          <i class="bi bi-save me-1"></i> Save Template
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let previewQuill = null;
+let editQuill = null;
+let currentTid = null;
+
+function previewTemplate(tid) {
+  currentTid = tid;
+  document.getElementById('previewModalBody').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>';
+  document.getElementById('previewUseBtn').href = '/proposals/new?template=' + tid;
+  new bootstrap.Modal(document.getElementById('previewModal')).show();
+  fetch('/api/templates/' + tid).then(r => r.json()).then(t => {
+    document.getElementById('previewModalTitle').textContent = t.name;
+    document.getElementById('previewModalBody').innerHTML = t.content;
+  });
+}
+
+function editTemplate(tid, name) {
+  currentTid = tid;
+  document.getElementById('editTemplateName').textContent = name;
+  document.getElementById('editTemplateId').value = tid;
+  const modal = new bootstrap.Modal(document.getElementById('editTemplateModal'));
+  modal.show();
+  fetch('/api/templates/' + tid).then(r => r.json()).then(t => {
+    if (!editQuill) {
+      editQuill = new Quill('#editQuillEditor', { theme: 'snow', modules: { toolbar: true } });
+    }
+    editQuill.clipboard.dangerouslyPasteHTML(t.content || '');
+  });
+}
+
+function saveTemplate() {
+  const tid = document.getElementById('editTemplateId').value;
+  const content = editQuill ? editQuill.root.innerHTML : '';
+  fetch('/api/templates/' + tid, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content })
+  }).then(r => r.json()).then(() => {
+    bootstrap.Modal.getInstance(document.getElementById('editTemplateModal')).hide();
+    showNotification('Template saved!', 'success');
+  });
+}
+</script>
+{% endblock %}

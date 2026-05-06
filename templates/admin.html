@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Admin Panel — ProposalBuilder{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title"><i class="bi bi-gear me-2"></i>Admin Panel</h1>
+    <p class="page-sub">System configuration and settings</p>
+  </div>
+  <a href="/julisunkan/reports?token={{ token }}" class="btn btn-outline-secondary">
+    <i class="bi bi-flag me-1"></i> View Reports
+  </a>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card-panel">
+      <h5 class="card-panel-title mb-4"><i class="bi bi-sliders me-2"></i>System Settings</h5>
+      <form method="POST" action="/julisunkan/settings">
+        <input type="hidden" name="token" value="{{ token }}">
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Groq API Key</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-key"></i></span>
+            <input type="password" name="groq_api_key" class="form-control"
+              id="groqKeyInput"
+              value="{{ settings.get('groq_api_key', '') }}"
+              placeholder="gsk_...">
+            <button type="button" class="btn btn-outline-secondary" onclick="toggleKey()">
+              <i class="bi bi-eye" id="toggleKeyIcon"></i>
+            </button>
+          </div>
+          <div class="form-text">
+            Get your free API key at <a href="https://console.groq.com" target="_blank">console.groq.com</a>.
+            Used for AI proposal generation (llama3-70b-8192).
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">App Name</label>
+          <input type="text" name="app_name" class="form-control"
+            value="{{ settings.get('app_name', 'Freelancer Proposal Builder') }}"
+            placeholder="Freelancer Proposal Builder">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Default Currency Symbol</label>
+          <input type="text" name="default_currency" class="form-control"
+            value="{{ settings.get('default_currency', '$') }}"
+            placeholder="$" style="max-width:100px;">
+        </div>
+
+        <button type="submit" class="btn btn-primary px-4">
+          <i class="bi bi-save me-1"></i> Save Settings
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card-panel mb-3">
+      <h5 class="card-panel-title mb-3"><i class="bi bi-info-circle me-2"></i>Admin Access Info</h5>
+      <div class="code-block">
+        <div class="mb-2"><span class="code-label">Admin URL:</span> <code>/julisunkan</code></div>
+        <div class="mb-2"><span class="code-label">Access Token:</span> <code>?token=julisunkan</code></div>
+        <div><span class="code-label">Full URL:</span> <code>/julisunkan?token=julisunkan</code></div>
+      </div>
+    </div>
+
+    <div class="card-panel">
+      <h5 class="card-panel-title mb-3"><i class="bi bi-stars me-2"></i>AI Status</h5>
+      {% if settings.get('groq_api_key') %}
+      <div class="alert alert-success d-flex align-items-center gap-2 mb-0">
+        <i class="bi bi-check-circle-fill"></i>
+        <div><strong>AI Ready</strong><br><small>Groq API key is configured.</small></div>
+      </div>
+      {% else %}
+      <div class="alert alert-warning d-flex align-items-center gap-2 mb-0">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <div><strong>AI Not Configured</strong><br><small>Add your Groq API key to enable AI features.</small></div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleKey() {
+  const input = document.getElementById('groqKeyInput');
+  const icon = document.getElementById('toggleKeyIcon');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.className = 'bi bi-eye-slash';
+  } else {
+    input.type = 'password';
+    icon.className = 'bi bi-eye';
+  }
+}
+</script>
+{% endblock %}

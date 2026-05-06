@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Reports — ProposalBuilder{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title"><i class="bi bi-flag me-2"></i>Reported Proposals</h1>
+    <p class="page-sub">{{ reports|length }} report{{ 's' if reports|length != 1 }}</p>
+  </div>
+  <a href="/julisunkan?token={{ token }}" class="btn btn-outline-secondary">
+    <i class="bi bi-arrow-left me-1"></i> Admin Panel
+  </a>
+</div>
+
+<!-- Filters -->
+<div class="filter-bar mb-4">
+  <span class="filter-lbl">Filter:</span>
+  <a href="/julisunkan/reports?token={{ token }}" class="badge-filter {% if not current_status %}active{% endif %}">All</a>
+  <a href="/julisunkan/reports?token={{ token }}&status=Open" class="badge-filter {% if current_status=='Open' %}active{% endif %}">Open</a>
+  <a href="/julisunkan/reports?token={{ token }}&status=Reviewed" class="badge-filter {% if current_status=='Reviewed' %}active{% endif %}">Reviewed</a>
+  <a href="/julisunkan/reports?token={{ token }}&status=Ignored" class="badge-filter {% if current_status=='Ignored' %}active{% endif %}">Ignored</a>
+</div>
+
+<div class="card-panel">
+  {% if reports %}
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Proposal</th>
+          <th>Client</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in reports %}
+        <tr>
+          <td class="text-muted small">{{ r.id }}</td>
+          <td><a href="/proposals/{{ r.proposal_id }}" class="text-decoration-none fw-semibold">{{ r.project_title }}</a></td>
+          <td class="text-muted">{{ r.client_name }}</td>
+          <td class="small">{{ r.reason or '—' }}</td>
+          <td>
+            <span class="status-pill status-{{ r.status|lower }}">{{ r.status }}</span>
+          </td>
+          <td class="text-muted small">{{ r.created_at[:10] }}</td>
+          <td>
+            <form method="POST" action="/julisunkan/reports/{{ r.id }}/status" class="d-flex gap-1">
+              <input type="hidden" name="token" value="{{ token }}">
+              {% if r.status != 'Reviewed' %}
+              <button name="status" value="Reviewed" class="btn btn-success btn-sm">✓ Reviewed</button>
+              {% endif %}
+              {% if r.status != 'Ignored' %}
+              <button name="status" value="Ignored" class="btn btn-outline-secondary btn-sm">Ignore</button>
+              {% endif %}
+              {% if r.status != 'Open' %}
+              <button name="status" value="Open" class="btn btn-outline-warning btn-sm">Reopen</button>
+              {% endif %}
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <i class="bi bi-flag display-4 text-muted"></i>
+    <h4 class="mt-3">No reports</h4>
+    <p class="text-muted">No proposals have been reported{% if current_status %} with status "{{ current_status }}"{% endif %}.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

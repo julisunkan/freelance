@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — ProposalBuilder{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-sub">Manage your freelance proposals</p>
+  </div>
+  <a href="/proposals/new" class="btn btn-primary btn-lg">
+    <i class="bi bi-plus-lg me-1"></i> New Proposal
+  </a>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon bg-indigo"><i class="bi bi-file-earmark-text"></i></div>
+    <div class="stat-info">
+      <div class="stat-val">{{ stats.total }}</div>
+      <div class="stat-lbl">Total Proposals</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon bg-green"><i class="bi bi-check-circle"></i></div>
+    <div class="stat-info">
+      <div class="stat-val">{{ stats.accepted }}</div>
+      <div class="stat-lbl">Accepted</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon bg-blue"><i class="bi bi-send"></i></div>
+    <div class="stat-info">
+      <div class="stat-val">{{ stats.sent }}</div>
+      <div class="stat-lbl">Sent</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon bg-amber"><i class="bi bi-graph-up-arrow"></i></div>
+    <div class="stat-info">
+      <div class="stat-val">{{ stats.acceptance_rate }}%</div>
+      <div class="stat-lbl">Acceptance Rate</div>
+    </div>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="filter-bar">
+  <span class="filter-lbl">Filter by status:</span>
+  <a href="/" class="badge-filter {% if not current_status %}active{% endif %}">All</a>
+  <a href="/?status=Draft" class="badge-filter status-draft {% if current_status=='Draft' %}active{% endif %}">Draft</a>
+  <a href="/?status=Sent" class="badge-filter status-sent {% if current_status=='Sent' %}active{% endif %}">Sent</a>
+  <a href="/?status=Accepted" class="badge-filter status-accepted {% if current_status=='Accepted' %}active{% endif %}">Accepted</a>
+  <a href="/?status=Rejected" class="badge-filter status-rejected {% if current_status=='Rejected' %}active{% endif %}">Rejected</a>
+</div>
+
+<!-- Proposals table -->
+<div class="card-panel">
+  {% if proposals %}
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Client</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Views</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in proposals %}
+        <tr>
+          <td>
+            <a href="/proposals/{{ p.id }}" class="fw-semibold text-decoration-none text-dark">
+              {{ p.project_title }}
+            </a>
+          </td>
+          <td class="text-muted">{{ p.client_name }}</td>
+          <td>{% if p.price %}<span class="fw-semibold">${{ "%.2f"|format(p.price|float) }}</span>{% else %}<span class="text-muted">—</span>{% endif %}</td>
+          <td><span class="status-pill status-{{ p.status|lower }}">{{ p.status }}</span></td>
+          <td class="text-muted small">{{ p.created_at[:10] }}</td>
+          <td class="text-muted small"><i class="bi bi-eye"></i> {{ p.views }}</td>
+          <td class="text-end">
+            <div class="btn-group btn-group-sm">
+              <a href="/proposals/{{ p.id }}" class="btn btn-outline-secondary" title="View"><i class="bi bi-eye"></i></a>
+              <a href="/proposals/{{ p.id }}/edit" class="btn btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+              <a href="/proposals/{{ p.id }}/export/pdf" class="btn btn-outline-danger" title="PDF"><i class="bi bi-file-pdf"></i></a>
+              <button class="btn btn-outline-danger" title="Delete"
+                onclick="confirmDelete({{ p.id }}, '{{ p.project_title|replace("'","\\'")|e }}')">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <i class="bi bi-file-earmark-plus display-4 text-muted"></i>
+    <h4 class="mt-3">No proposals yet</h4>
+    <p class="text-muted">Start by creating your first proposal.</p>
+    <a href="/proposals/new" class="btn btn-primary mt-2">
+      <i class="bi bi-plus-lg me-1"></i> Create Proposal
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Delete modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body text-center py-4">
+        <i class="bi bi-exclamation-triangle-fill text-danger fs-1"></i>
+        <h5 class="mt-3">Delete Proposal?</h5>
+        <p class="text-muted small mb-0" id="deleteModalTitle"></p>
+      </div>
+      <div class="modal-footer border-0 justify-content-center pb-4">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form id="deleteForm" method="POST">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function confirmDelete(id, title) {
+  document.getElementById('deleteModalTitle').textContent = title;
+  document.getElementById('deleteForm').action = '/proposals/' + id + '/delete';
+  new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
+{% endblock %}
