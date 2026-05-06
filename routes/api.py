@@ -80,7 +80,7 @@ def api_delete_section(sid):
     return jsonify({'ok': True})
 
 
-@api_bp.route('/api/templates/<int:tid>')
+@api_bp.route('/api/templates/<int:tid>', methods=['GET'])
 def api_get_template(tid):
     t = models.get_template(tid)
     if not t:

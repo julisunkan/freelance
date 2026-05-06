@@ -40,7 +40,11 @@ def create_nda():
 
     if not data['party_a'] or not data['party_b'] or not data['purpose']:
         templates = models.get_all_templates()
+        settings = models.get_all_settings()
+        groq_key = settings.get('groq_api_key', '')
+        ai_enabled = settings.get('ai_enabled', 'false').lower() == 'true'
         return render_template('index.html', templates=templates,
+                               ai_available=bool(groq_key and ai_enabled),
                                error='Party A, Party B, and Purpose are required.',
                                form_data=data)
 
@@ -56,7 +60,7 @@ def create_nda():
         tmpl = models.get_template(template_id)
         enhanced = enhance_nda(base_html, data, tmpl, groq_key,
                                settings.get('groq_model', 'llama-3.3-70b-versatile'),
-                               settings.get('default_tone', 'formal'))
+                               f.get('tone') or settings.get('default_tone', 'formal'))
         if enhanced:
             nda_html = enhanced
 

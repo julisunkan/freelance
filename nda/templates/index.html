@@ -181,8 +181,7 @@
 
           <!-- Generate -->
           <div class="submit-zone">
-            <button type="submit" class="btn btn-primary btn-lg btn-full" id="submitBtn"
-                    onclick="this.disabled=true;this.textContent='Generating…';this.form.submit()">
+            <button type="submit" class="btn btn-primary btn-lg btn-full" id="submitBtn">
               Generate NDA
             </button>
             <p class="submit-hint">Your NDA will be ready to sign and export immediately.</p>
@@ -220,5 +219,11 @@ function selectTone(val) {
   const cb = document.querySelector('[name="mutual"]');
   if (cb) { const row = document.getElementById('mutualToggleRow'); if(row) row.classList.toggle('active', cb.checked); }
 })();
+
+// Disable submit button only after HTML5 validation passes
+document.getElementById('ndaForm').addEventListener('submit', function() {
+  const btn = document.getElementById('submitBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Generating…'; }
+});
 </script>
 {% endblock %}
