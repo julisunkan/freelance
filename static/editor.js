@@ -35,6 +35,11 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ── Load template button ──────────────────────────── */
+  const tplWarning   = document.getElementById('tpl-replace-warning');
+  const tplReplaceYes = document.getElementById('tpl-replace-yes');
+  const tplReplaceNo  = document.getElementById('tpl-replace-no');
+  let pendingTid = null;
+
   document.getElementById('loadTemplateBtn').addEventListener('click', function () {
     const sel = document.getElementById('templateSelect');
     const tid = sel.value;
@@ -47,16 +52,22 @@ document.addEventListener('DOMContentLoaded', function () {
     const hasContent = html !== '' && html !== '<p><br></p>';
 
     if (hasContent) {
-      _showInlineConfirm(
-        'tpl-replace-bar',
-        document.getElementById('loadTemplateBtn'),
-        '<i class="bi bi-exclamation-triangle-fill me-1 text-warning"></i>This will replace your current editor content.',
-        'Replace Content',
-        () => _doLoadTemplate(tid)
-      );
+      pendingTid = tid;
+      tplWarning.style.display = 'block';
       return;
     }
     _doLoadTemplate(tid);
+  });
+
+  tplReplaceYes.addEventListener('click', function () {
+    tplWarning.style.display = 'none';
+    if (pendingTid) _doLoadTemplate(pendingTid);
+    pendingTid = null;
+  });
+
+  tplReplaceNo.addEventListener('click', function () {
+    tplWarning.style.display = 'none';
+    pendingTid = null;
   });
 
   /* ── AI: Generate ──────────────────────────────────── */

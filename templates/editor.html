@@ -77,6 +77,17 @@
         <button type="button" class="btn btn-outline-primary btn-sm w-100" id="loadTemplateBtn">
           <i class="bi bi-download me-1"></i> Load Template
         </button>
+        <!-- Inline replace warning — shown when editor already has content -->
+        <div id="tpl-replace-warning" style="display:none" class="inline-confirm-bar mt-2">
+          <p class="small mb-2">
+            <i class="bi bi-exclamation-triangle-fill me-1 text-warning"></i>
+            This will replace your current editor content.
+          </p>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-danger btn-sm flex-grow-1" id="tpl-replace-yes">Replace</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm flex-grow-1" id="tpl-replace-no">Cancel</button>
+          </div>
+        </div>
       </div>
 
       <!-- Sections -->
