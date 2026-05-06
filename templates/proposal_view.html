@@ -65,19 +65,6 @@
       </div>
     </div>
 
-    <!-- Share -->
-    <div class="card-panel mb-3">
-      <h6 class="card-panel-title"><i class="bi bi-share me-1"></i>Share Link</h6>
-      <div class="input-group input-group-sm">
-        <input type="text" class="form-control" id="shareLink"
-          value="{{ request.host_url }}share/{{ proposal.share_token }}" readonly>
-        <button class="btn btn-outline-secondary" onclick="copyShareLink()">
-          <i class="bi bi-clipboard"></i>
-        </button>
-      </div>
-      <p class="text-muted small mt-1 mb-0">Anyone with this link can view the proposal.</p>
-    </div>
-
     <!-- Score -->
     <div class="card-panel mb-3">
       <h6 class="card-panel-title"><i class="bi bi-bar-chart me-1"></i>Proposal Score</h6>
@@ -160,11 +147,6 @@
 
 {% block scripts %}
 <script>
-function copyShareLink() {
-  const input = document.getElementById('shareLink');
-  navigator.clipboard.writeText(input.value).then(() => showNotification('Share link copied to clipboard!', 'success'));
-}
-
 /* Inline delete confirmation — no browser popup */
 const deleteToggleBtn = document.getElementById('deleteToggleBtn');
 const deleteConfirmBar = document.getElementById('deleteConfirmBar');
