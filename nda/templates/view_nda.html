@@ -78,32 +78,6 @@
           </div>
         </div>
 
-        <!-- Signing links -->
-        {% if nda.status != 'signed' %}
-        <div class="card">
-          <div class="card-title"><span class="icon">✍</span> Signing Links</div>
-          <p class="text-sm text-muted mb-2">Share these links with each party to collect their e-signature.</p>
-
-          <p class="text-sm fw-bold mb-1">{{ nda.party_a }}</p>
-          {% if nda.signature_a %}
-            <div class="notif notif-success" style="animation:none;margin-bottom:.75rem;font-size:.82rem">✓ Signed</div>
-          {% else %}
-            <div class="link-box mb-1">{{ sign_url_a }}</div>
-            <button class="btn btn-outline btn-sm btn-full mb-3"
-                    onclick="copyLink('{{ sign_url_a }}', 'Party A signing link')">📋 Copy Link</button>
-          {% endif %}
-
-          <p class="text-sm fw-bold mb-1">{{ nda.party_b }}</p>
-          {% if nda.signature_b %}
-            <div class="notif notif-success" style="animation:none;margin-bottom:.75rem;font-size:.82rem">✓ Signed</div>
-          {% else %}
-            <div class="link-box mb-1">{{ sign_url_b }}</div>
-            <button class="btn btn-outline btn-sm btn-full"
-                    onclick="copyLink('{{ sign_url_b }}', 'Party B signing link')">📋 Copy Link</button>
-          {% endif %}
-        </div>
-        {% endif %}
-
         <!-- Export -->
         <div class="card">
           <div class="card-title"><span class="icon">⬇</span> Export</div>
