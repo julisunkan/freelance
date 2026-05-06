@@ -1,0 +1,392 @@
+================================================================================
+  FREELANCER SUITE — MARKETING COPY & KEYWORDS
+  Two AI-Powered Tools for Independent Professionals
+================================================================================
+
+
+════════════════════════════════════════════════════════════════════════════════
+  APP 1 — PROPOSAL BUILDER
+════════════════════════════════════════════════════════════════════════════════
+
+── TAGLINES ─────────────────────────────────────────────────────────────────
+
+  • "Win More Clients. Write Less."
+  • "AI-Written Proposals That Close Deals."
+  • "From Brief to Billable — In Minutes."
+  • "Your Freelance Proposals, Powered by AI."
+  • "Stop Staring at a Blank Page. Let AI Write Your Next Proposal."
+  • "Professional Proposals. Zero Effort."
+  • "The Smartest Way to Pitch Your Services."
+
+
+── SHORT DESCRIPTION (1–2 sentences) ────────────────────────────────────────
+
+  Proposal Builder is an AI-powered tool that helps freelancers write, manage,
+  and send professional client proposals in minutes. Generate compelling content
+  with one click, export to PDF or Word, and track every proposal from draft to
+  accepted.
+
+
+── MEDIUM DESCRIPTION (3–5 sentences) ───────────────────────────────────────
+
+  Proposal Builder gives freelancers a competitive edge by combining a rich text
+  editor with AI-powered content generation. Describe your project, hit Generate,
+  and receive a fully written, persuasive proposal tailored to your client —
+  complete with an introduction, solution outline, deliverables, pricing, and a
+  strong call to action. Every proposal gets a unique shareable link so clients
+  can view it on any device without needing an account. Export to PDF or Word in
+  one click, and track the status of every proposal (Draft, Sent, Accepted,
+  Rejected) from a clean dashboard. A built-in scoring tool rates your proposal
+  on clarity, structure, pricing, and call-to-action strength so you always send
+  your best work.
+
+
+── LONG DESCRIPTION (landing page / app store) ──────────────────────────────
+
+  Winning freelance work starts with a great proposal — but writing one from
+  scratch is time-consuming and often inconsistent. Proposal Builder solves that.
+
+  Powered by Groq AI, Proposal Builder writes high-quality, persuasive freelance
+  proposals for you based on a few key details: the client's name, the project
+  description, your budget, and timeline. The result is a fully structured
+  proposal with a warm introduction, a clear articulation of the client's problem,
+  your proposed solution, your deliverables, your investment ask, and a confident
+  closing — all in under 30 seconds.
+
+  Already have a draft? Use the "Improve with AI" feature to have Groq refine
+  your existing content for tone, persuasiveness, and professionalism without
+  changing your core message.
+
+  KEY FEATURES:
+  - AI proposal generation powered by Groq (llama-3.3-70b-versatile)
+  - Rich WYSIWYG editor (Quill) for full manual control
+  - 10 industry proposal templates (Web Dev, Mobile App, Brand Design, SEO,
+    Social Media, E-Commerce, UI/UX, Data Analysis, Content Writing, Consulting)
+  - Export to PDF, Word (.docx), or plain text
+  - Unique shareable link for each proposal — no client login required
+  - Proposal status tracking: Draft → Sent → Accepted / Rejected
+  - Proposal Strength Score: rates clarity, structure, pricing, and CTA out of 100
+  - Full export history log per proposal
+  - Admin panel for AI configuration
+  - Installable as a Progressive Web App (PWA)
+
+
+── FEATURE BULLETS (ads / social media) ─────────────────────────────────────
+
+  ✓ AI writes your entire proposal in under 30 seconds
+  ✓ Rich editor — customize every word before sending
+  ✓ 10 proven proposal templates across top freelance niches
+  ✓ Export to PDF or Word with one click
+  ✓ Share proposals with clients via a unique link — no login needed
+  ✓ Track proposal status: Draft, Sent, Accepted, Rejected
+  ✓ Proposal Strength Score shows you where to improve
+  ✓ Works in your browser — no downloads, no setup
+
+
+── TARGET AUDIENCE ──────────────────────────────────────────────────────────
+
+  Primary:
+    - Freelance developers, designers, writers, marketers, consultants
+    - Independent contractors and solopreneurs
+    - Small creative and digital agencies
+
+  Secondary:
+    - Freelancers who are tired of losing clients to poorly written proposals
+    - Professionals transitioning to freelance work
+    - Agency teams looking to standardize their proposal process
+
+
+── SEO / SEARCH KEYWORDS ────────────────────────────────────────────────────
+
+  Short-tail:
+    freelance proposal tool, proposal builder, AI proposal generator,
+    freelance proposal template, business proposal software
+
+  Long-tail:
+    AI-powered freelance proposal generator, how to write a freelance proposal,
+    best proposal software for freelancers, free proposal builder online,
+    freelance proposal template word PDF, auto-generate client proposal,
+    AI write business proposal, proposal tracking software for freelancers,
+    winning freelance proposal examples, client proposal generator tool
+
+  Niche / vertical:
+    web developer proposal template, graphic design proposal generator,
+    SEO proposal template, social media management proposal builder,
+    consulting proposal software, marketing proposal tool,
+    freelance developer proposal example, UX design proposal generator
+
+
+── SOCIAL MEDIA COPY ────────────────────────────────────────────────────────
+
+  Twitter / X:
+    Tired of spending 2 hours on a proposal that takes the client 2 minutes to
+    read? Proposal Builder writes it for you — AI-generated, fully editable,
+    PDF-ready. Try it now.
+
+  LinkedIn:
+    The #1 reason freelancers lose deals isn't their work — it's their proposal.
+    Proposal Builder uses AI to write compelling, professional proposals tailored
+    to each client. Generate, customize, export, and track — all in one place.
+
+  Instagram caption:
+    Your next proposal, written by AI. Edit it. Brand it. Send it. Track it.
+    Proposal Builder turns a 2-hour task into a 2-minute win. ✍️
+
+
+── AD COPY (Google / Meta) ──────────────────────────────────────────────────
+
+  Headline 1: AI Freelance Proposal Builder
+  Headline 2: Write Winning Proposals in Minutes
+  Headline 3: PDF Export · Shareable Links · Free to Use
+  Description: Stop losing clients to weak proposals. Let AI generate a
+  professional, persuasive proposal for any project — in under 30 seconds.
+  Export to PDF, share with a link, and track every response.
+
+
+================================================================================
+
+
+════════════════════════════════════════════════════════════════════════════════
+  APP 2 — NDA GENERATOR AI
+════════════════════════════════════════════════════════════════════════════════
+
+── TAGLINES ─────────────────────────────────────────────────────────────────
+
+  • "Protect Your Ideas Before You Share Them."
+  • "Legal-Grade NDAs. No Lawyer Required."
+  • "Generate. Sign. Export. Done."
+  • "Your AI-Powered Non-Disclosure Agreement — Ready in Seconds."
+  • "Professional NDAs for Every Industry. Signed in Minutes."
+  • "From Idea to Signed NDA — Instantly."
+  • "The Smart Way to Protect Confidential Business Conversations."
+
+
+── SHORT DESCRIPTION (1–2 sentences) ────────────────────────────────────────
+
+  NDA Generator AI creates legally structured, industry-specific
+  Non-Disclosure Agreements in seconds. Choose from 20 professional templates,
+  fill in the details, e-sign digitally, and export a PDF — all in one place.
+
+
+── MEDIUM DESCRIPTION (3–5 sentences) ───────────────────────────────────────
+
+  NDA Generator AI removes the friction from protecting confidential business
+  discussions. Select from 20 industry-specific NDA templates — covering
+  everything from startup deals to healthcare compliance and M&A transactions —
+  fill in party details, purpose, jurisdiction, and duration, and your NDA is
+  generated instantly. Optionally enhance the legal language with Groq AI to make
+  it more formal, startup-friendly, or legally dense depending on your needs.
+  Both parties can e-sign directly in the browser using a signature pad, and the
+  completed agreement exports as a professionally formatted PDF with signatures
+  and metadata. Every action — from creation to signing — is recorded in a
+  tamper-evident audit trail.
+
+
+── LONG DESCRIPTION (landing page / app store) ──────────────────────────────
+
+  Whether you're a founder sharing your pitch deck, a developer starting a new
+  client project, or an executive negotiating a merger — you need an NDA before
+  the conversation begins. NDA Generator AI makes it effortless.
+
+  Choose from 20 industry-specific templates crafted for the most common
+  professional contexts: startups, corporate disclosures, freelance development,
+  healthcare (HIPAA-aware), financial services, employment, M&A, venture capital,
+  legal services, and more. Each template includes purpose-built confidential
+  information definitions, optional compliance clauses, and the right legal tone
+  for its industry.
+
+  Optionally activate Groq AI enhancement to refine the legal language in one of
+  four tones: Formal, Strict, Startup-Friendly, or Legal-Heavy. The AI
+  strengthens structure and clarity while preserving all class names and
+  formatting — giving you a more polished agreement without losing control.
+
+  Once generated, both parties receive unique signing links. Each party signs
+  using a digital signature pad directly in the browser — no printing, no
+  scanning. When both parties have signed, the NDA is locked, and a full PDF
+  with embedded signatures, IP addresses, and timestamps is ready to download.
+
+  KEY FEATURES:
+  - 20 industry-specific NDA templates (Startup, Corporate, Freelance, Healthcare,
+    Finance, Employment, Supply Chain, Research, Real Estate, Marketing, Creative,
+    Manufacturing, Legal, Technology Transfer, Investment, M&A, Product, 
+    International, Consulting, Software Development)
+  - Optional clauses: Non-Compete, IP Assignment, Non-Solicitation, Arbitration,
+    Return of Information
+  - AI enhancement via Groq — four legal tones (Formal, Strict, Startup, Legal-Heavy)
+  - Digital e-signature pad for both parties — browser-based, no software needed
+  - Mutual or one-way NDA configuration
+  - 195 jurisdictions (all countries worldwide)
+  - Duration options: 1, 2, 3, 5 years, or indefinitely
+  - PDF export with embedded signatures and metadata
+  - Full audit trail: creation, viewing, signing events with timestamps and IPs
+  - Unique document ID per NDA for reference
+  - Admin panel for AI model and tone configuration
+  - Installable as a Progressive Web App (PWA)
+
+
+── FEATURE BULLETS (ads / social media) ─────────────────────────────────────
+
+  ✓ 20 industry-specific NDA templates — not generic boilerplate
+  ✓ AI refines legal language to your preferred tone
+  ✓ Both parties e-sign in the browser — no printing required
+  ✓ Mutual or one-way NDA with a single toggle
+  ✓ Covers all 195 countries for jurisdiction
+  ✓ PDF export with embedded signatures, timestamps, and IPs
+  ✓ Full audit trail for every document
+  ✓ No account needed for signing parties
+
+
+── TARGET AUDIENCE ──────────────────────────────────────────────────────────
+
+  Primary:
+    - Startup founders sharing ideas with investors, co-founders, or contractors
+    - Freelancers and agencies beginning new client engagements
+    - Small business owners entering vendor, supplier, or partnership agreements
+    - HR and operations teams handling employee confidentiality
+
+  Secondary:
+    - Legal professionals needing quick first-draft NDAs
+    - Consultants and advisors protecting strategic information
+    - Healthcare, finance, and tech companies with compliance requirements
+    - Anyone who needs an NDA signed fast without hiring a lawyer
+
+
+── SEO / SEARCH KEYWORDS ────────────────────────────────────────────────────
+
+  Short-tail:
+    NDA generator, NDA template, non-disclosure agreement, free NDA online,
+    NDA creator, e-sign NDA, digital NDA
+
+  Long-tail:
+    AI NDA generator free, create NDA online instantly, non-disclosure agreement
+    template PDF, NDA generator with e-signature, mutual NDA template download,
+    generate NDA for freelancers, startup NDA template, HIPAA NDA template,
+    NDA for software developers, investment NDA template, M&A NDA template,
+    one-way non-disclosure agreement generator, NDA with digital signature online,
+    free NDA generator no login, business NDA creator with AI
+
+  Niche / vertical:
+    freelance developer NDA template, healthcare confidentiality agreement,
+    venture capital NDA template, employee NDA generator, vendor NDA template,
+    startup founder NDA, consulting NDA agreement, real estate NDA generator,
+    marketing agency NDA, manufacturing trade secret NDA, legal services NDA
+
+
+── SOCIAL MEDIA COPY ────────────────────────────────────────────────────────
+
+  Twitter / X:
+    Before you share your idea, your code, your strategy — get it in writing.
+    NDA Generator AI creates a signed, PDF-ready NDA in under 2 minutes. 20
+    industry templates. AI-enhanced legal language. Digital signatures. Free.
+
+  LinkedIn:
+    Every partnership, vendor relationship, and client conversation that involves
+    sensitive information should start with an NDA. NDA Generator AI makes that
+    effortless — 20 industry-specific templates, AI-enhanced legal language, and
+    browser-based e-signatures. Your documents are audit-logged and PDF-ready the
+    moment both parties sign.
+
+  Instagram caption:
+    Share ideas. Not risks. 🔒 NDA Generator AI creates professional
+    non-disclosure agreements in seconds — sign digitally, export as PDF, done.
+
+
+── AD COPY (Google / Meta) ──────────────────────────────────────────────────
+
+  Headline 1: AI NDA Generator — Free & Instant
+  Headline 2: 20 Industry Templates · E-Sign · PDF Export
+  Headline 3: Mutual & One-Way NDAs for Any Business
+  Description: Generate a professional, legally structured Non-Disclosure
+  Agreement in seconds. Choose your industry template, add party details,
+  enhance with AI, and get both parties to sign digitally — no lawyer needed.
+
+
+================================================================================
+
+
+════════════════════════════════════════════════════════════════════════════════
+  FREELANCER SUITE — COMBINED / PLATFORM MARKETING
+════════════════════════════════════════════════════════════════════════════════
+
+── TAGLINES ─────────────────────────────────────────────────────────────────
+
+  • "Every Client Engagement Starts Here."
+  • "Proposals That Win. NDAs That Protect."
+  • "The AI Toolkit Every Freelancer Needs."
+  • "Start Every Project Right — Proposal + NDA in Minutes."
+  • "Two Tools. One Suite. Zero Friction."
+
+
+── SHORT DESCRIPTION ────────────────────────────────────────────────────────
+
+  Freelancer Suite is an AI-powered platform with two tools every independent
+  professional needs: a Proposal Builder that writes winning client proposals,
+  and an NDA Generator that creates, signs, and archives confidentiality
+  agreements — both powered by Groq AI.
+
+
+── LONG DESCRIPTION ─────────────────────────────────────────────────────────
+
+  Freelancer Suite gives you everything you need before the work begins.
+
+  Start with a compelling proposal — let AI write it for you based on the project
+  details, or use one of 10 professionally crafted templates. Customize it in a
+  rich editor, score it for quality, then share it with your client via a unique
+  link and export to PDF or Word.
+
+  Once the client is interested, protect your conversation with an NDA — choose
+  from 20 industry-specific templates, configure mutual or one-way disclosure,
+  optionally let AI sharpen the legal language, and get both parties to sign
+  digitally in minutes. The finished document is PDF-exportable with embedded
+  signatures and a full audit trail.
+
+  No lawyer needed. No paper. No back-and-forth. Just professional documents,
+  signed and archived — so you can focus on the work.
+
+
+── COMBINED KEYWORDS ────────────────────────────────────────────────────────
+
+  freelancer tools, freelance business toolkit, AI tools for freelancers,
+  freelance proposal and NDA software, client onboarding tools for freelancers,
+  free tools for independent contractors, AI document generator for freelancers,
+  freelance legal documents online, proposal and contract tool for freelancers,
+  digital signature tool for freelancers, freelance business software free,
+  AI-powered freelance platform, document automation for freelancers,
+  freelance client management tools, online tools for solopreneurs
+
+
+── COMPETITOR POSITIONING ───────────────────────────────────────────────────
+
+  vs. HelloSign / DocuSign:
+    "All the e-signing power, none of the enterprise pricing."
+
+  vs. Bonsai / HoneyBook:
+    "Just the two tools you actually use — without the CRM you don't need."
+
+  vs. writing proposals manually:
+    "AI writes your proposal in 30 seconds. It used to take you 3 hours."
+
+  vs. lawyer-drafted NDAs:
+    "Industry-specific, AI-enhanced NDAs — without the $500 legal bill."
+
+
+── PRESS / PRODUCT HUNT PITCH ───────────────────────────────────────────────
+
+  Freelancer Suite is two AI-powered tools built for the moment before the work
+  starts — when you need to pitch a client and protect your ideas at the same
+  time.
+
+  The Proposal Builder lets you generate a full, persuasive client proposal in
+  under 30 seconds using Groq AI. The NDA Generator creates legally structured
+  non-disclosure agreements from 20 industry-specific templates, with digital
+  e-signatures and PDF export built in.
+
+  Both tools are free, run in the browser, require no account for recipients,
+  and are installable as PWAs. Built for freelancers who want to look
+  professional from day one — without the overhead of enterprise software.
+
+
+================================================================================
+  END OF MARKETING DOCUMENT
+  Freelancer Suite — Proposal Builder + NDA Generator AI
+================================================================================
