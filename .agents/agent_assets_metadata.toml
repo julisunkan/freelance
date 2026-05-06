@@ -22,7 +22,7 @@ title = "proposal builder maskable pwa icon"
 id = "jogORAUkZ3r1BsdDhsMCY"
 uri = "file://marketing.txt"
 type = "text"
-title = "Freelancer Suite — Marketing Copy & Keywords"
+title = "Proposal Builder — Marketing Copy & Keywords"
 
 [[outputs]]
 id = "ltRsLpjqEy-q0H6iOlLLr"
@@ -35,3 +35,9 @@ id = "Fhj67-uLT6ECGFjh3wZmg"
 uri = "file://static/icon-maskable-512.png"
 type = "image"
 title = "Maskable PWA Icon (512x512)"
+
+[[outputs]]
+id = "yt5wJzzvZABzu6wRE7QnC"
+uri = "file://nda/marketing.txt"
+type = "text"
+title = "NDA Generator AI — Marketing Copy & Keywords"

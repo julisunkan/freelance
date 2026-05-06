@@ -1,0 +1,184 @@
+================================================================================
+  NDA GENERATOR AI — MARKETING COPY & KEYWORDS
+================================================================================
+
+
+── TAGLINES ─────────────────────────────────────────────────────────────────
+
+  • "Protect Your Ideas Before You Share Them."
+  • "Legal-Grade NDAs. No Lawyer Required."
+  • "Generate. Sign. Export. Done."
+  • "Your AI-Powered Non-Disclosure Agreement — Ready in Seconds."
+  • "Professional NDAs for Every Industry. Signed in Minutes."
+  • "From Idea to Signed NDA — Instantly."
+  • "The Smart Way to Protect Confidential Business Conversations."
+
+
+── SHORT DESCRIPTION (1–2 sentences) ────────────────────────────────────────
+
+  NDA Generator AI creates legally structured, industry-specific
+  Non-Disclosure Agreements in seconds. Choose from 20 professional templates,
+  fill in the details, e-sign digitally, and export a PDF — all in one place.
+
+
+── MEDIUM DESCRIPTION (3–5 sentences) ───────────────────────────────────────
+
+  NDA Generator AI removes the friction from protecting confidential business
+  discussions. Select from 20 industry-specific NDA templates — covering
+  everything from startup deals to healthcare compliance and M&A transactions —
+  fill in party details, purpose, jurisdiction, and duration, and your NDA is
+  generated instantly. Optionally enhance the legal language with Groq AI to make
+  it more formal, startup-friendly, or legally dense depending on your needs.
+  Both parties can e-sign directly in the browser using a signature pad, and the
+  completed agreement exports as a professionally formatted PDF with signatures
+  and metadata. Every action — from creation to signing — is recorded in a
+  tamper-evident audit trail.
+
+
+── LONG DESCRIPTION (landing page / app store) ──────────────────────────────
+
+  Whether you're a founder sharing your pitch deck, a developer starting a new
+  client project, or an executive negotiating a merger — you need an NDA before
+  the conversation begins. NDA Generator AI makes it effortless.
+
+  Choose from 20 industry-specific templates crafted for the most common
+  professional contexts: startups, corporate disclosures, freelance development,
+  healthcare (HIPAA-aware), financial services, employment, M&A, venture capital,
+  legal services, and more. Each template includes purpose-built confidential
+  information definitions, optional compliance clauses, and the right legal tone
+  for its industry.
+
+  Optionally activate Groq AI enhancement to refine the legal language in one of
+  four tones: Formal, Strict, Startup-Friendly, or Legal-Heavy. The AI
+  strengthens structure and clarity while preserving all class names and
+  formatting — giving you a more polished agreement without losing control.
+
+  Once generated, both parties receive unique signing links. Each party signs
+  using a digital signature pad directly in the browser — no printing, no
+  scanning. When both parties have signed, the NDA is locked, and a full PDF
+  with embedded signatures, IP addresses, and timestamps is ready to download.
+
+  KEY FEATURES:
+  - 20 industry-specific NDA templates (Startup, Corporate, Freelance, Healthcare,
+    Finance, Employment, Supply Chain, Research, Real Estate, Marketing, Creative,
+    Manufacturing, Legal, Technology Transfer, Investment, M&A, Product,
+    International, Consulting, Software Development)
+  - Optional clauses: Non-Compete, IP Assignment, Non-Solicitation, Arbitration,
+    Return of Information
+  - AI enhancement via Groq — four legal tones (Formal, Strict, Startup, Legal-Heavy)
+  - Digital e-signature pad for both parties — browser-based, no software needed
+  - Mutual or one-way NDA configuration
+  - 195 jurisdictions covering all countries worldwide
+  - Duration options: 1, 2, 3, 5 years, or indefinitely
+  - PDF export with embedded signatures and metadata
+  - Full audit trail: creation, viewing, and signing events with timestamps and IPs
+  - Unique document ID per NDA for easy reference
+  - Admin panel for AI model and tone configuration
+  - Installable as a Progressive Web App (PWA)
+
+
+── FEATURE BULLETS (ads / social media) ─────────────────────────────────────
+
+  ✓ 20 industry-specific NDA templates — not generic boilerplate
+  ✓ AI refines legal language to your preferred tone
+  ✓ Both parties e-sign in the browser — no printing required
+  ✓ Mutual or one-way NDA with a single toggle
+  ✓ Covers all 195 countries for jurisdiction
+  ✓ PDF export with embedded signatures, timestamps, and IPs
+  ✓ Full audit trail for every document
+  ✓ No account needed for signing parties
+
+
+── TARGET AUDIENCE ──────────────────────────────────────────────────────────
+
+  Primary:
+    - Startup founders sharing ideas with investors, co-founders, or contractors
+    - Freelancers and agencies beginning new client engagements
+    - Small business owners entering vendor, supplier, or partnership agreements
+    - HR and operations teams handling employee confidentiality
+
+  Secondary:
+    - Legal professionals needing quick first-draft NDAs
+    - Consultants and advisors protecting strategic information
+    - Healthcare, finance, and tech companies with compliance requirements
+    - Anyone who needs an NDA signed fast without hiring a lawyer
+
+
+── SEO / SEARCH KEYWORDS ────────────────────────────────────────────────────
+
+  Short-tail:
+    NDA generator, NDA template, non-disclosure agreement, free NDA online,
+    NDA creator, e-sign NDA, digital NDA
+
+  Long-tail:
+    AI NDA generator free, create NDA online instantly, non-disclosure agreement
+    template PDF, NDA generator with e-signature, mutual NDA template download,
+    generate NDA for freelancers, startup NDA template, HIPAA NDA template,
+    NDA for software developers, investment NDA template, M&A NDA template,
+    one-way non-disclosure agreement generator, NDA with digital signature online,
+    free NDA generator no login, business NDA creator with AI
+
+  Niche / vertical:
+    freelance developer NDA template, healthcare confidentiality agreement,
+    venture capital NDA template, employee NDA generator, vendor NDA template,
+    startup founder NDA, consulting NDA agreement, real estate NDA generator,
+    marketing agency NDA, manufacturing trade secret NDA, legal services NDA
+
+
+── SOCIAL MEDIA COPY ────────────────────────────────────────────────────────
+
+  Twitter / X:
+    Before you share your idea, your code, your strategy — get it in writing.
+    NDA Generator AI creates a signed, PDF-ready NDA in under 2 minutes. 20
+    industry templates. AI-enhanced legal language. Digital signatures. Free.
+
+  LinkedIn:
+    Every partnership, vendor relationship, and client conversation that involves
+    sensitive information should start with an NDA. NDA Generator AI makes that
+    effortless — 20 industry-specific templates, AI-enhanced legal language, and
+    browser-based e-signatures. Your documents are audit-logged and PDF-ready the
+    moment both parties sign.
+
+  Instagram caption:
+    Share ideas. Not risks. 🔒 NDA Generator AI creates professional
+    non-disclosure agreements in seconds — sign digitally, export as PDF, done.
+
+
+── AD COPY (Google / Meta) ──────────────────────────────────────────────────
+
+  Headline 1: AI NDA Generator — Free & Instant
+  Headline 2: 20 Industry Templates · E-Sign · PDF Export
+  Headline 3: Mutual & One-Way NDAs for Any Business
+  Description: Generate a professional, legally structured Non-Disclosure
+  Agreement in seconds. Choose your industry template, add party details,
+  enhance with AI, and get both parties to sign digitally — no lawyer needed.
+
+
+── COMPETITOR POSITIONING ───────────────────────────────────────────────────
+
+  vs. HelloSign / DocuSign:
+    "All the e-signing power, none of the enterprise pricing."
+
+  vs. generic NDA templates online:
+    "20 industry-specific templates with AI enhancement — not one-size-fits-all
+    boilerplate."
+
+  vs. lawyer-drafted NDAs:
+    "Industry-specific, AI-enhanced NDAs — without the $500 legal bill."
+
+
+── PRESS / PRODUCT HUNT PITCH ───────────────────────────────────────────────
+
+  NDA Generator AI is built for the moment before the work starts — when you
+  need to protect your ideas before sharing them. Choose from 20 industry-
+  specific templates, configure mutual or one-way disclosure, optionally let
+  Groq AI sharpen the legal language in four professional tones, and get both
+  parties to sign digitally in minutes. The finished document is PDF-ready with
+  embedded signatures and a full audit trail. Free to use, no account required
+  for signing parties, installable as a PWA. Built for professionals who want
+  legal protection without the legal overhead.
+
+
+================================================================================
+  END OF DOCUMENT — NDA Generator AI
+================================================================================
