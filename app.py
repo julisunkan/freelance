@@ -24,6 +24,10 @@ def create_app():
         return send_from_directory('static', 'sw.js',
                                    mimetype='application/javascript')
 
+    @app.errorhandler(403)
+    def forbidden(e):
+        return render_template('403.html'), 403
+
     @app.errorhandler(404)
     def not_found(e):
         return render_template('404.html'), 404

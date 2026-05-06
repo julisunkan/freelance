@@ -141,15 +141,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /* ── Insert section by id ────────────────────────────── */
 function insertSection(sid) {
-  fetch('/api/sections')
+  fetch('/api/sections/' + sid)
     .then(r => r.json())
-    .then(sections => {
-      const s = sections.find(x => x.id === sid);
-      if (!s) return;
+    .then(s => {
+      if (s.error) { showNotification('Section not found.', 'error'); return; }
       const range = quill.getSelection(true);
       quill.clipboard.dangerouslyPasteHTML(range.index, s.content);
       showNotification('Section "' + s.name + '" inserted.', 'success');
-    });
+    })
+    .catch(() => showNotification('Failed to load section.', 'error'));
 }
 
 /* ── Private helpers ─────────────────────────────────── */
@@ -191,29 +191,3 @@ function _setAILoading(btn, loading, label) {
     : `<i class="bi bi-${icon} me-1"></i>${label}`;
 }
 
-/* ── Generic inline confirmation bar ────────────────────
-   anchorId  — unique id for the bar element
-   anchor    — DOM element to insert after
-   message   — HTML string shown as the prompt
-   confirmLabel — button text
-   onConfirm — callback on confirm
-*/
-function _showInlineConfirm(anchorId, anchor, message, confirmLabel, onConfirm) {
-  // Toggle off if already showing
-  const existing = document.getElementById(anchorId);
-  if (existing) { existing.remove(); return; }
-
-  const bar = document.createElement('div');
-  bar.id = anchorId;
-  bar.className = 'inline-confirm-bar mt-2';
-  bar.innerHTML = `
-    <p class="small mb-2">${message}</p>
-    <div class="d-flex gap-2">
-      <button class="btn btn-sm btn-danger flex-grow-1 ic-yes">${confirmLabel}</button>
-      <button class="btn btn-sm btn-outline-secondary flex-grow-1 ic-no">Cancel</button>
-    </div>`;
-  anchor.insertAdjacentElement('afterend', bar);
-
-  bar.querySelector('.ic-yes').addEventListener('click', () => { bar.remove(); onConfirm(); });
-  bar.querySelector('.ic-no').addEventListener('click', () => bar.remove());
-}

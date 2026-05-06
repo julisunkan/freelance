@@ -101,7 +101,7 @@ function editTemplate(tid, name) {
   currentTid = tid;
   document.getElementById('editTemplateName').textContent = name;
   document.getElementById('editTemplateId').value = tid;
-  const modal = new bootstrap.Modal(document.getElementById('editTemplateModal'));
+  const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editTemplateModal'));
   modal.show();
   fetch('/api/templates/' + tid).then(r => r.json()).then(t => {
     if (!editQuill) {

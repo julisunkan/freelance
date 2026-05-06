@@ -45,11 +45,14 @@ def api_get_template(tid):
 
 @api_bp.route('/api/templates/<int:tid>', methods=['PUT'])
 def api_update_template(tid):
+    existing = models.get_template(tid)
+    if not existing:
+        return jsonify({'error': 'Not found'}), 404
     data = request.get_json(force=True)
     models.update_template(tid, {
-        'name': data.get('name', ''),
-        'content': data.get('content', ''),
-        'category': data.get('category', '')
+        'name':     data.get('name')     or existing['name'],
+        'content':  data.get('content')  if data.get('content') is not None else existing['content'],
+        'category': data.get('category') or existing.get('category', '')
     })
     return jsonify({'ok': True})
 
@@ -57,6 +60,14 @@ def api_update_template(tid):
 @api_bp.route('/api/sections', methods=['GET'])
 def api_sections():
     return jsonify(models.get_all_sections())
+
+
+@api_bp.route('/api/sections/<int:sid>', methods=['GET'])
+def api_get_section(sid):
+    s = models.get_section(sid)
+    if not s:
+        return jsonify({'error': 'Not found'}), 404
+    return jsonify(s)
 
 
 @api_bp.route('/api/sections', methods=['POST'])
