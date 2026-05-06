@@ -15,12 +15,14 @@
           <span class="status-pill status-{{ nda.status }}">{{ nda.status }}</span>
           <span class="text-sm text-muted">Created {{ nda.created_at[:10] }}</span>
           <span class="text-sm text-muted">·</span>
-          <a href="/audit/{{ nda.public_id }}" class="text-sm" style="color:var(--brand)">View Audit Log</a>
+          <a href="{{ url_for('audit.audit_log', public_id=nda.public_id) }}"
+             class="text-sm" style="color:var(--brand)">View Audit Log</a>
         </div>
       </div>
       <div class="flex gap-2 flex-wrap">
-        <a href="/" class="btn btn-outline btn-sm">← New NDA</a>
-        <a href="/nda/download/{{ nda.public_id }}" class="btn btn-primary btn-sm">⬇ Download PDF</a>
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline btn-sm">← New NDA</a>
+        <a href="{{ url_for('export.download_pdf', public_id=nda.public_id) }}"
+           class="btn btn-primary btn-sm">⬇ Download PDF</a>
       </div>
     </div>
 
@@ -102,12 +104,11 @@
         </div>
         {% endif %}
 
-        <!-- Actions -->
+        <!-- Export -->
         <div class="card">
           <div class="card-title"><span class="icon">⬇</span> Export</div>
-          <a href="/nda/download/{{ nda.public_id }}" class="btn btn-primary btn-full">
-            Download PDF
-          </a>
+          <a href="{{ url_for('export.download_pdf', public_id=nda.public_id) }}"
+             class="btn btn-primary btn-full">Download PDF</a>
           <p class="text-sm text-muted mt-2 text-center">
             {% if nda.status == 'signed' %}Includes both signatures.{% else %}Partial — sign to include signatures.{% endif %}
           </p>

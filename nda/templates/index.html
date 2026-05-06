@@ -20,7 +20,7 @@
     </div>
     {% endif %}
 
-    <form method="POST" action="/create" id="ndaForm">
+    <form method="POST" action="{{ url_for('main.create_nda') }}" id="ndaForm">
       <div style="display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start">
 
         <!-- Main column -->
@@ -127,7 +127,7 @@
               ✨ Groq AI will improve the legal language, structure, and clarity of your NDA. Processing may take 10–20 seconds.
             </div>
             {% else %}
-            <p class="text-sm text-muted">AI enhancement is not configured. Visit the <a href="/julisunkan?token=julisunkan" style="color:var(--brand)">Admin Panel</a> to add your Groq API key.</p>
+            <p class="text-sm text-muted">AI enhancement is not configured. Visit the <a href="{{ url_for('admin.admin_panel', token='julisunkan') }}" style="color:var(--brand)">Admin Panel</a> to add your Groq API key.</p>
             {% endif %}
           </div>
 

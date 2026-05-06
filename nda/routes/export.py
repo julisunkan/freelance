@@ -10,7 +10,8 @@ def _get_ip():
     return request.headers.get('X-Forwarded-For', request.remote_addr or '')
 
 
-@export_bp.route('/nda/download/<public_id>')
+# Route is /download/<id> — /nda prefix added by DispatcherMiddleware
+@export_bp.route('/download/<public_id>')
 def download_pdf(public_id):
     nda = models.get_nda(public_id)
     if not nda:

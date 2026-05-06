@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from models import init_db
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -24,6 +24,14 @@ def create_app():
     app.register_blueprint(export_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(audit_bp)
+
+    @app.after_request
+    def add_sw_header(response):
+        if request.path.endswith('/sw.js'):
+            # Allow the SW to claim the app root (e.g. /nda/ when mounted)
+            scope = (request.script_root or '') + '/'
+            response.headers['Service-Worker-Allowed'] = scope
+        return response
 
     @app.errorhandler(404)
     def not_found(e):

@@ -10,7 +10,7 @@
         <h1 style="font-size:1.4rem;font-weight:800;color:var(--brand-dark)">⚙ Admin Panel</h1>
         <p class="text-sm text-muted">AI configuration and system overview</p>
       </div>
-      <a href="/" class="btn btn-outline btn-sm">← Back to App</a>
+      <a href="{{ url_for('main.index') }}" class="btn btn-outline btn-sm">← Back to App</a>
     </div>
 
     <!-- Stats -->
@@ -26,10 +26,10 @@
 
     <div style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start">
 
-      <!-- Settings -->
+      <!-- Settings form -->
       <div class="card">
         <div class="card-title"><span class="icon">🤖</span> Groq AI Configuration</div>
-        <form method="POST" action="/julisunkan/settings">
+        <form method="POST" action="{{ url_for('admin.save_settings') }}">
           <input type="hidden" name="token" value="{{ token }}">
 
           <div class="settings-grid">
@@ -73,9 +73,8 @@
         </form>
 
         <hr class="divider">
-
         <div class="card-title"><span class="icon">ℹ</span> Access Info</div>
-        <div class="code-info">/julisunkan?token=julisunkan</div>
+        <div class="code-info">{{ url_for('admin.admin_panel', token='julisunkan') }}</div>
 
         {% if settings.get('groq_api_key') %}
         <div class="notif notif-success" style="animation:none;margin-top:.75rem;font-size:.85rem">
@@ -109,7 +108,8 @@
           {% if recent %}
           {% for r in recent[:6] %}
           <div style="font-size:.82rem;padding:.4rem 0;border-bottom:1px solid var(--border)">
-            <a href="/nda/{{ r.public_id }}" style="color:var(--brand);font-weight:600">{{ r.party_a }} &amp; {{ r.party_b }}</a>
+            <a href="{{ url_for('main.view_nda', public_id=r.public_id) }}"
+               style="color:var(--brand);font-weight:600">{{ r.party_a }} &amp; {{ r.party_b }}</a>
             <div class="flex align-center gap-1 mt-1">
               <span class="status-pill status-{{ r.status }}" style="font-size:.7rem;padding:.15rem .5rem">{{ r.status }}</span>
               <span class="text-muted">{{ r.created_at[:10] if r.created_at else '' }}</span>

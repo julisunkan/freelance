@@ -1,17 +1,13 @@
 /* ── Notification system ───────────────────────────── */
 function notify(message, type) {
   type = type || 'info';
-  const colors = { success: '#22c55e', error: '#ef4444', info: '#4f46e5', warning: '#f59e0b' };
-  const icons  = { success: '✓', error: '✕', info: 'ℹ', warning: '⚠' };
-
+  const icons = { success: '✓', error: '✕', info: 'ℹ', warning: '⚠' };
   const bar = document.getElementById('notifications');
   if (!bar) return;
-
   const el = document.createElement('div');
   el.className = 'notif notif-' + type;
   el.innerHTML = `<span class="notif-icon">${icons[type] || 'ℹ'}</span><span class="notif-msg">${message}</span><button class="notif-close" onclick="this.parentElement.remove()">×</button>`;
   bar.prepend(el);
-
   setTimeout(() => { el.classList.add('notif-hide'); setTimeout(() => el.remove(), 400); }, 5000);
 }
 
@@ -24,14 +20,16 @@ function initSignaturePad(canvasId) {
 
   function resize() {
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
-    const w = canvas.offsetWidth;
-    canvas.width  = w * ratio;
+    canvas.width  = canvas.offsetWidth * ratio;
     canvas.height = 180 * ratio;
     canvas.getContext('2d').scale(ratio, ratio);
     if (signaturePad) signaturePad.clear();
   }
 
-  signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgb(255,255,255)', penColor: '#1e1b4b' });
+  signaturePad = new SignaturePad(canvas, {
+    backgroundColor: 'rgb(255,255,255)',
+    penColor: '#1e1b4b'
+  });
   window.addEventListener('resize', resize);
   resize();
 }
@@ -40,10 +38,14 @@ function clearSignature() {
   if (signaturePad) signaturePad.clear();
 }
 
-/* ── Sign form submit ──────────────────────────────── */
-function submitSignature(token, party) {
+/* ── Sign form submit (uses SIGN_ACTION set by sign.html template) ── */
+function submitSignature() {
   if (!signaturePad || signaturePad.isEmpty()) {
     notify('Please draw your signature before submitting.', 'error');
+    return;
+  }
+  if (typeof SIGN_ACTION === 'undefined') {
+    notify('Signing configuration error. Please reload the page.', 'error');
     return;
   }
   const sigData = signaturePad.toDataURL('image/png');
@@ -53,20 +55,22 @@ function submitSignature(token, party) {
   const fd = new FormData();
   fd.append('signature', sigData);
 
-  fetch('/nda/sign/' + party + '/' + token, { method: 'POST', body: fd })
+  fetch(SIGN_ACTION, { method: 'POST', body: fd })
     .then(r => r.json())
     .then(data => {
       if (data.error) {
         notify(data.error, 'error');
-        if (btn) { btn.disabled = false; btn.textContent = 'Submit Signature'; }
+        if (btn) { btn.disabled = false; btn.textContent = '✓ Submit Signature'; }
         return;
       }
       notify('Signature submitted successfully!', 'success');
-      setTimeout(() => { window.location.href = '/nda/' + data.public_id; }, 1800);
+      setTimeout(() => {
+        window.location.href = data.view_url || ('/nda/view/' + data.public_id);
+      }, 1800);
     })
     .catch(() => {
       notify('Submission failed. Please try again.', 'error');
-      if (btn) { btn.disabled = false; btn.textContent = 'Submit Signature'; }
+      if (btn) { btn.disabled = false; btn.textContent = '✓ Submit Signature'; }
     });
 }
 
@@ -79,7 +83,7 @@ function copyLink(text, label) {
   });
 }
 
-/* ── Template preview ──────────────────────────────── */
+/* ── Template selector ──────────────────────────────── */
 function selectTemplate(id, name) {
   document.getElementById('template_id').value = id;
   document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('selected'));
@@ -89,13 +93,13 @@ function selectTemplate(id, name) {
   if (label) label.textContent = name;
 }
 
-/* ── AI toggle ─────────────────────────────────────── */
+/* ── AI toggle ──────────────────────────────────────── */
 function toggleAI(el) {
   const notice = document.getElementById('ai-notice');
   if (notice) notice.style.display = el.checked ? 'block' : 'none';
 }
 
-/* ── PWA install ───────────────────────────────────── */
+/* ── PWA install ────────────────────────────────────── */
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
@@ -109,9 +113,4 @@ function installPWA() {
     deferredPrompt.prompt();
     deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
   }
-}
-
-/* ── Service worker ────────────────────────────────── */
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/static/sw.js').catch(() => {});
 }

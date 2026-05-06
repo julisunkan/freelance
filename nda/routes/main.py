@@ -69,7 +69,8 @@ def create_nda():
     return redirect(url_for('main.view_nda', public_id=public_id))
 
 
-@main_bp.route('/nda/<public_id>')
+# Route is /view/<id> — the /nda prefix is added by DispatcherMiddleware
+@main_bp.route('/view/<public_id>')
 def view_nda(public_id):
     nda = models.get_nda(public_id)
     if not nda:
@@ -77,9 +78,11 @@ def view_nda(public_id):
 
     models.log_audit(nda['id'], 'NDA viewed', _get_ip(), request.user_agent.string)
 
-    base_url = request.host_url.rstrip('/')
-    sign_url_a = f"{base_url}/nda/sign/a/{nda['sign_token_a']}"
-    sign_url_b = f"{base_url}/nda/sign/b/{nda['sign_token_b']}"
+    # url_for respects SCRIPT_NAME set by DispatcherMiddleware → /nda/sign/a/...
+    sign_url_a = request.host_url.rstrip('/') + url_for(
+        'signing.sign_a', token=nda['sign_token_a'])
+    sign_url_b = request.host_url.rstrip('/') + url_for(
+        'signing.sign_b', token=nda['sign_token_b'])
 
     return render_template('view_nda.html', nda=nda,
                            sign_url_a=sign_url_a, sign_url_b=sign_url_b)

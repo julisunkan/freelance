@@ -4,21 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}NDA Generator AI{% endblock %}</title>
-  <link rel="stylesheet" href="/static/style.css">
-  <link rel="manifest" href="/static/manifest.json">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
   <meta name="theme-color" content="#4f46e5">
   <meta name="description" content="Generate, sign, and export professional NDAs with AI enhancement.">
 </head>
 <body>
 
 <nav class="navbar">
-  <a href="/" class="navbar-brand">
+  <a href="{{ url_for('main.index') }}" class="navbar-brand">
     <span class="logo-icon">📋</span>
     <span>NDA Generator AI</span>
   </a>
   <div class="navbar-actions">
     <button id="installBtn" class="btn-install" onclick="installPWA()">⊕ Install App</button>
-    <a href="/julisunkan?token=julisunkan">⚙ Admin</a>
+    <a href="{{ url_for('admin.admin_panel', token='julisunkan') }}">⚙ Admin</a>
   </div>
 </nav>
 
@@ -26,7 +26,15 @@
 
 {% block content %}{% endblock %}
 
-<script src="/static/app.js"></script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
 {% block scripts %}{% endblock %}
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register(
+      '{{ url_for("static", filename="sw.js") }}',
+      { scope: '{{ url_for("main.index") }}' }
+    ).catch(() => {});
+  }
+</script>
 </body>
 </html>
