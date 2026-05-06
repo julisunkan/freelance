@@ -138,7 +138,7 @@
                        data-name="{{ t.name }}"
                        data-cat="{{ t.category }}"
                        data-color="{{ t.color }}"
-                       onclick="selectTemplate({{ t.id }}, {{ t.name|tojson }}, {{ t.category|tojson }}, {{ t.color|tojson }})">
+                       onclick='selectTemplate({{ t.id }}, {{ t.name|tojson }}, {{ t.category|tojson }}, {{ t.color|tojson }})'>
                     <div class="tpl-dot" style="background:{{ t.color }}"></div>
                     <div class="tpl-option-text">
                       <div class="tpl-option-name">{{ t.name }}</div>

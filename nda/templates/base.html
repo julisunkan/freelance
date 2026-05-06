@@ -27,7 +27,7 @@
 
 {% block content %}{% endblock %}
 
-<script src="{{ url_for('static', filename='app.js') }}"></script>
+<script src="{{ url_for('static', filename='app.js') }}?v=2"></script>
 {% block scripts %}{% endblock %}
 <script>
   if ('serviceWorker' in navigator) {
