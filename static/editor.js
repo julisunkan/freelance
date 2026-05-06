@@ -139,18 +139,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-/* ── Insert section by id ────────────────────────────── */
-function insertSection(sid) {
-  fetch('/api/sections/' + sid)
-    .then(r => r.json())
-    .then(s => {
-      if (s.error) { showNotification('Section not found.', 'error'); return; }
-      const range = quill.getSelection(true);
-      quill.clipboard.dangerouslyPasteHTML(range.index, s.content);
-      showNotification('Section "' + s.name + '" inserted.', 'success');
-    })
-    .catch(() => showNotification('Failed to load section.', 'error'));
-}
 
 /* ── Private helpers ─────────────────────────────────── */
 function _doLoadTemplate(tid) {

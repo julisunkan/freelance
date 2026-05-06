@@ -90,20 +90,6 @@
         </div>
       </div>
 
-      <!-- Sections -->
-      {% if sections %}
-      <div class="card-panel mb-3">
-        <h6 class="card-panel-title"><i class="bi bi-puzzle me-1"></i>Insert Section</h6>
-        <div class="section-list">
-          {% for s in sections %}
-          <button type="button" class="btn btn-outline-secondary btn-sm mb-1 w-100 text-start"
-            onclick="insertSection({{ s.id }})">
-            <i class="bi bi-plus me-1"></i>{{ s.name }}
-          </button>
-          {% endfor %}
-        </div>
-      </div>
-      {% endif %}
 
       <!-- AI Tools -->
       <div class="card-panel mb-3">

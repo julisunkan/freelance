@@ -27,15 +27,13 @@ def new_proposal():
         if not data['client_name'] or not data['project_title']:
             flash('Client name and project title are required.', 'error')
             return render_template('editor.html', proposal=data,
-                                   templates=models.get_all_templates(),
-                                   sections=models.get_all_sections())
+                                   templates=models.get_all_templates())
         pid = models.create_proposal(data)
         flash('Proposal created successfully!', 'success')
         return redirect(url_for('proposals.view_proposal', pid=pid))
 
     return render_template('editor.html', proposal=None,
-                           templates=models.get_all_templates(),
-                           sections=models.get_all_sections())
+                           templates=models.get_all_templates())
 
 
 @proposals_bp.route('/proposals/<int:pid>/edit', methods=['GET', 'POST'])
@@ -57,15 +55,13 @@ def edit_proposal(pid):
         if not data['client_name'] or not data['project_title']:
             flash('Client name and project title are required.', 'error')
             return render_template('editor.html', proposal=proposal,
-                                   templates=models.get_all_templates(),
-                                   sections=models.get_all_sections())
+                                   templates=models.get_all_templates())
         models.update_proposal(pid, data)
         flash('Proposal updated successfully!', 'success')
         return redirect(url_for('proposals.view_proposal', pid=pid))
 
     return render_template('editor.html', proposal=proposal,
-                           templates=models.get_all_templates(),
-                           sections=models.get_all_sections())
+                           templates=models.get_all_templates())
 
 
 @proposals_bp.route('/proposals/<int:pid>')
@@ -103,11 +99,6 @@ def public_view(token):
     models.increment_views(proposal['id'])
     return render_template('public_view.html', proposal=proposal)
 
-
-@proposals_bp.route('/sections')
-def sections_page():
-    sections = models.get_all_sections()
-    return render_template('sections.html', sections=sections)
 
 
 @proposals_bp.route('/templates')
