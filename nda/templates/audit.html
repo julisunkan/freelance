@@ -5,17 +5,16 @@
 <div class="page-wrap">
   <div class="container-sm">
 
-    <div class="flex justify-between align-center flex-wrap gap-3 mb-3">
-      <div>
-        <h1 style="font-size:1.3rem;font-weight:800;color:var(--brand-dark)">🔍 Audit Log</h1>
-        <p class="text-muted text-sm">{{ nda.party_a }} &amp; {{ nda.party_b }} &nbsp;·&nbsp; ID: {{ nda.public_id }}</p>
+    <div class="page-header">
+      <div class="page-header-text">
+        <div class="page-title">Audit Log</div>
+        <div class="page-subtitle">{{ nda.party_a }} &amp; {{ nda.party_b }} &nbsp;·&nbsp; ID: {{ nda.public_id }}</div>
       </div>
-      <a href="{{ url_for('main.view_nda', public_id=nda.public_id) }}"
-         class="btn btn-outline btn-sm">← Back to NDA</a>
+      <a href="{{ url_for('main.view_nda', public_id=nda.public_id) }}" class="btn btn-outline btn-sm">← Back to NDA</a>
     </div>
 
     <div class="card">
-      <div class="card-title"><span class="icon">📋</span> Activity ({{ logs|length }} events)</div>
+      <div class="card-title"><span class="icon">📋</span> Activity &mdash; {{ logs|length }} event{{ 's' if logs|length != 1 else '' }}</div>
       {% if logs %}
         {% for log in logs %}
         <div class="audit-row">

@@ -5,18 +5,16 @@
 <div class="page-wrap">
   <div class="container">
 
-    <!-- Header -->
-    <div class="flex justify-between align-center flex-wrap gap-3 mb-3">
-      <div>
-        <h1 style="font-size:1.5rem;font-weight:800;color:var(--brand-dark)">
-          {{ nda.party_a }} &amp; {{ nda.party_b }}
-        </h1>
-        <div class="flex align-center gap-2 mt-1">
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="page-header-text">
+        <div class="page-title">{{ nda.party_a }} &amp; {{ nda.party_b }}</div>
+        <div class="page-subtitle" style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">
           <span class="status-pill status-{{ nda.status }}">{{ nda.status }}</span>
-          <span class="text-sm text-muted">Created {{ nda.created_at[:10] }}</span>
-          <span class="text-sm text-muted">·</span>
+          <span>Created {{ nda.created_at[:10] }}</span>
+          <span style="color:var(--border)">·</span>
           <a href="{{ url_for('audit.audit_log', public_id=nda.public_id) }}"
-             class="text-sm" style="color:var(--brand)">View Audit Log</a>
+             style="color:var(--brand);font-weight:600;text-decoration:none">View Audit Log</a>
         </div>
       </div>
       <div class="flex gap-2 flex-wrap">
@@ -66,16 +64,14 @@
         <!-- Status -->
         <div class="card">
           <div class="card-title"><span class="icon">📊</span> Status</div>
-          <div class="flex align-center gap-2 mb-2">
-            <span class="status-pill status-{{ nda.status }}">{{ nda.status }}</span>
-          </div>
-          <div class="text-sm text-muted">
-            {% if nda.status == 'draft' %}NDA created. Share signing links below.
+          <span class="status-pill status-{{ nda.status }}" style="margin-bottom:.75rem;display:inline-flex">{{ nda.status }}</span>
+          <p class="text-sm text-muted" style="margin-top:.5rem">
+            {% if nda.status == 'draft' %}NDA created. Ready for signatures.
             {% elif nda.status == 'sent' %}Signing links have been viewed.
             {% elif nda.status == 'partial' %}One party has signed. Waiting for the other.
-            {% elif nda.status == 'signed' %}✅ Both parties have signed. NDA is complete.
+            {% elif nda.status == 'signed' %}Both parties have signed. NDA is complete.
             {% endif %}
-          </div>
+          </p>
         </div>
 
         <!-- Export -->
@@ -84,7 +80,7 @@
           <a href="{{ url_for('export.download_pdf', public_id=nda.public_id) }}"
              class="btn btn-primary btn-full">Download PDF</a>
           <p class="text-sm text-muted mt-2 text-center">
-            {% if nda.status == 'signed' %}Includes both signatures.{% else %}Partial — sign to include signatures.{% endif %}
+            {% if nda.status == 'signed' %}Includes both signatures.{% else %}Unsigned version — sign to include signatures.{% endif %}
           </p>
         </div>
 
@@ -94,8 +90,8 @@
           <table style="width:100%;font-size:.83rem;border-collapse:collapse">
             {% for k, v in [('Document ID', nda.public_id), ('Jurisdiction', nda.jurisdiction or '—'), ('Duration', nda.duration or '—'), ('Type', 'Mutual' if nda.mutual else 'One-Way')] %}
             <tr>
-              <td style="color:var(--muted);padding:.35rem 0;width:45%">{{ k }}</td>
-              <td style="font-weight:600;word-break:break-all">{{ v }}</td>
+              <td style="color:var(--muted);padding:.4rem 0;width:45%;font-weight:500">{{ k }}</td>
+              <td style="font-weight:600;word-break:break-all;color:var(--text)">{{ v }}</td>
             </tr>
             {% endfor %}
           </table>

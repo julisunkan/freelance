@@ -1,4 +1,4 @@
-/* ── Notification system ───────────────────────────── */
+/* ── Notification system ─────────────────────────────── */
 function notify(message, type) {
   type = type || 'info';
   const icons = { success: '✓', error: '✕', info: 'ℹ', warning: '⚠' };
@@ -11,7 +11,64 @@ function notify(message, type) {
   setTimeout(() => { el.classList.add('notif-hide'); setTimeout(() => el.remove(), 400); }, 5000);
 }
 
-/* ── Signature pad ─────────────────────────────────── */
+/* ── Template dropdown ───────────────────────────────── */
+function toggleTplDropdown() {
+  const btn = document.getElementById('tplSelectBtn');
+  const dropdown = document.getElementById('tplDropdown');
+  const search = document.getElementById('tplSearch');
+  if (!btn || !dropdown) return;
+  const isOpen = dropdown.classList.contains('open');
+  if (isOpen) {
+    closeTplDropdown();
+  } else {
+    dropdown.classList.add('open');
+    btn.classList.add('open');
+    if (search) { search.value = ''; filterTemplates(''); search.focus(); }
+  }
+}
+
+function closeTplDropdown() {
+  const btn = document.getElementById('tplSelectBtn');
+  const dropdown = document.getElementById('tplDropdown');
+  if (btn) btn.classList.remove('open');
+  if (dropdown) dropdown.classList.remove('open');
+}
+
+function selectTemplate(id, name, cat, color) {
+  document.getElementById('template_id').value = id;
+  document.getElementById('tplSelectName').textContent = name;
+  document.getElementById('tplSelectCat').textContent = cat || '';
+  document.getElementById('tplDot').style.background = color || '#4f46e5';
+  document.querySelectorAll('.tpl-option').forEach(o => o.classList.remove('selected'));
+  const opt = document.getElementById('tpl-opt-' + id);
+  if (opt) opt.classList.add('selected');
+  closeTplDropdown();
+}
+
+function filterTemplates(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('.tpl-option').forEach(opt => {
+    const name = (opt.dataset.name || '').toLowerCase();
+    const cat  = (opt.dataset.cat  || '').toLowerCase();
+    opt.style.display = (!q || name.includes(q) || cat.includes(q)) ? '' : 'none';
+  });
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  const wrap = document.getElementById('tplDropdownWrap');
+  if (wrap && !wrap.contains(e.target)) closeTplDropdown();
+});
+
+/* ── AI toggle ───────────────────────────────────────── */
+function toggleAI(el) {
+  const notice = document.getElementById('ai-notice');
+  const toneRow = document.getElementById('ai-tone-row');
+  if (notice)  notice.style.display  = el.checked ? 'block' : 'none';
+  if (toneRow) toneRow.style.display = el.checked ? 'block' : 'none';
+}
+
+/* ── Signature pad ───────────────────────────────────── */
 let signaturePad = null;
 
 function initSignaturePad(canvasId) {
@@ -38,7 +95,7 @@ function clearSignature() {
   if (signaturePad) signaturePad.clear();
 }
 
-/* ── Sign form submit (uses SIGN_ACTION set by sign.html template) ── */
+/* ── Sign form submit ────────────────────────────────── */
 function submitSignature() {
   if (!signaturePad || signaturePad.isEmpty()) {
     notify('Please draw your signature before submitting.', 'error');
@@ -74,43 +131,11 @@ function submitSignature() {
     });
 }
 
-/* ── Copy to clipboard ─────────────────────────────── */
+/* ── Copy to clipboard ───────────────────────────────── */
 function copyLink(text, label) {
   navigator.clipboard.writeText(text).then(() => {
     notify((label || 'Link') + ' copied to clipboard!', 'success');
   }).catch(() => {
     notify('Could not copy. Please copy manually.', 'warning');
   });
-}
-
-/* ── Template selector ──────────────────────────────── */
-function selectTemplate(id, name) {
-  document.getElementById('template_id').value = id;
-  document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('selected'));
-  const card = document.getElementById('tpl-' + id);
-  if (card) card.classList.add('selected');
-  const label = document.getElementById('selected-tpl-label');
-  if (label) label.textContent = name;
-}
-
-/* ── AI toggle ──────────────────────────────────────── */
-function toggleAI(el) {
-  const notice = document.getElementById('ai-notice');
-  if (notice) notice.style.display = el.checked ? 'block' : 'none';
-}
-
-/* ── PWA install ────────────────────────────────────── */
-let deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const btn = document.getElementById('installBtn');
-  if (btn) btn.style.display = 'inline-flex';
-});
-
-function installPWA() {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
-  }
 }

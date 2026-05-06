@@ -1,7 +1,5 @@
-const CACHE = 'nda-ai-v2';
+const CACHE = 'nda-ai-v4';
 const STATIC = [
-  '/nda/static/style.css',
-  '/nda/static/app.js',
   '/nda/static/manifest.json'
 ];
 
@@ -22,6 +20,7 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
+  if (url.pathname.endsWith('.css') || url.pathname.endsWith('.js')) return;
   if (url.pathname.startsWith('/nda/static/')) {
     e.respondWith(
       caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {

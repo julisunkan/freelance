@@ -1,30 +1,36 @@
 {% extends 'base.html' %}
-{% block title %}NDA Generator AI — Create Professional NDAs{% endblock %}
+{% block title %}NDA Generator — Create Professional NDAs{% endblock %}
 
 {% block content %}
 <div class="page-wrap">
   <div class="container">
 
-    <div class="hero">
-      <div class="hero-badge">✦ AI-Powered &nbsp;·&nbsp; E-Sign Ready &nbsp;·&nbsp; PDF Export</div>
-      <h1>Generate Professional NDAs<br>in Minutes</h1>
-      <p>20 industry templates, Groq AI enhancement, token-based e-signatures, and server-side PDF generation.</p>
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="page-header-text">
+        <div class="page-title">Generate a Non-Disclosure Agreement</div>
+        <div class="page-subtitle">Fill in the details below, choose a template, and generate a professional NDA instantly.</div>
+      </div>
+      <div class="page-badges">
+        <span class="badge badge-indigo">✦ AI-Powered</span>
+        <span class="badge badge-green">✍ E-Sign Ready</span>
+        <span class="badge badge-blue">⬇ PDF Export</span>
+      </div>
     </div>
 
     {% if error %}
-    <div style="max-width:700px;margin:0 auto 1.25rem">
-      <div class="notif notif-error" style="animation:none">
-        <span class="notif-icon">✕</span>
-        <span class="notif-msg">{{ error }}</span>
-      </div>
+    <div class="notif notif-error" style="animation:none;margin-bottom:1.25rem">
+      <span class="notif-icon">✕</span>
+      <span class="notif-msg">{{ error }}</span>
     </div>
     {% endif %}
 
     <form method="POST" action="{{ url_for('main.create_nda') }}" id="ndaForm">
-      <div style="display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start">
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start">
 
-        <!-- Main column -->
+        <!-- ── Left column ─────────────────────────── -->
         <div>
+
           <!-- Parties -->
           <div class="card">
             <div class="card-title"><span class="icon">👥</span> Party Details</div>
@@ -70,10 +76,13 @@
                 </select>
               </div>
               <div class="form-group full">
-                <label class="clause-item" style="cursor:pointer;flex-direction:row;align-items:center;gap:.6rem;border:1.5px solid var(--border);border-radius:8px;padding:.65rem 1rem;font-weight:600">
-                  <input type="checkbox" name="mutual" value="1" {% if not form_data or form_data.mutual %}checked{% endif %}
-                         onchange="updateMutualLabel(this)">
-                  <span id="mutualLabel">Mutual NDA — both parties share and protect information</span>
+                <label class="toggle-row" id="mutualToggleRow" onclick="updateMutualLabel(this.querySelector('input'))">
+                  <input type="checkbox" name="mutual" value="1"
+                         {% if not form_data or form_data.mutual %}checked{% endif %}>
+                  <div class="toggle-text">
+                    <div class="toggle-title" id="mutualLabel">Mutual NDA</div>
+                    <div class="toggle-desc" id="mutualDesc">Both parties share and protect confidential information equally.</div>
+                  </div>
                 </label>
               </div>
             </div>
@@ -83,35 +92,62 @@
           <div class="card">
             <div class="card-title"><span class="icon">📝</span> Optional Clauses</div>
             <div class="clauses-grid">
-              {% for val, label in [('non_compete','Non-Compete'),('ip_assignment','IP Assignment'),('non_solicitation','Non-Solicitation'),('arbitration','Arbitration Clause'),('return_info','Return of Information')] %}
+              {% for val, label in [('non_compete','Non-Compete'),('ip_assignment','IP Assignment'),('non_solicitation','Non-Solicitation'),('arbitration','Arbitration'),('return_info','Return of Information')] %}
               <label class="clause-item" id="clause-{{ val }}" onclick="toggleClause('{{ val }}')">
                 <input type="checkbox" name="clauses" value="{{ val }}"> {{ label }}
               </label>
               {% endfor %}
             </div>
           </div>
+
         </div>
 
-        <!-- Right sidebar -->
+        <!-- ── Right sidebar ───────────────────────── -->
         <div>
-          <!-- Template selector -->
+
+          <!-- Template picker (dropdown) -->
           <div class="card">
-            <div class="card-title"><span class="icon">📑</span> Choose Template</div>
-            <input type="hidden" name="template_id" id="template_id" value="1">
-            <div class="tpl-grid">
-              {% for t in templates %}
-              <div class="tpl-card {% if loop.first %}selected{% endif %}"
-                   id="tpl-{{ t.id }}"
-                   onclick="selectTemplate({{ t.id }}, {{ t.name|tojson }})">
-                <div class="tpl-dot" style="background:{{ t.color }}"></div>
-                <div class="tpl-name">{{ t.name }}</div>
-                <div class="tpl-cat">{{ t.category }}</div>
+            <div class="card-title"><span class="icon">📑</span> Template</div>
+            <input type="hidden" name="template_id" id="template_id" value="{{ templates[0].id if templates else 1 }}">
+
+            <div class="tpl-dropdown-wrap" id="tplDropdownWrap">
+              <!-- Trigger button -->
+              <button type="button" class="tpl-select-btn" id="tplSelectBtn" onclick="toggleTplDropdown()">
+                <div class="tpl-select-left">
+                  <div class="tpl-dot" id="tplDot" style="background:{{ templates[0].color if templates else '#4f46e5' }}"></div>
+                  <div>
+                    <div class="tpl-select-name" id="tplSelectName">{{ templates[0].name if templates else 'Choose template' }}</div>
+                    <div class="tpl-select-cat" id="tplSelectCat">{{ templates[0].category if templates else '' }}</div>
+                  </div>
+                </div>
+                <svg class="tpl-select-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2.5 5l4.5 4.5L11.5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+              </button>
+
+              <!-- Dropdown panel -->
+              <div class="tpl-dropdown" id="tplDropdown">
+                <div class="tpl-search-wrap">
+                  <input type="text" class="tpl-search" id="tplSearch" placeholder="Search templates…" oninput="filterTemplates(this.value)" onclick="event.stopPropagation()">
+                </div>
+                <div id="tplOptionsList">
+                  {% for t in templates %}
+                  <div class="tpl-option {% if loop.first %}selected{% endif %}"
+                       id="tpl-opt-{{ t.id }}"
+                       data-id="{{ t.id }}"
+                       data-name="{{ t.name }}"
+                       data-cat="{{ t.category }}"
+                       data-color="{{ t.color }}"
+                       onclick="selectTemplate({{ t.id }}, {{ t.name|tojson }}, {{ t.category|tojson }}, {{ t.color|tojson }})">
+                    <div class="tpl-dot" style="background:{{ t.color }}"></div>
+                    <div class="tpl-option-text">
+                      <div class="tpl-option-name">{{ t.name }}</div>
+                      <div class="tpl-option-cat">{{ t.category }}</div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
               </div>
-              {% endfor %}
-            </div>
-            <div class="selected-tpl-bar">
-              <span>✓</span>
-              <span id="selected-tpl-label">{{ templates[0].name }}</span>
             </div>
           </div>
 
@@ -119,24 +155,39 @@
           <div class="card">
             <div class="card-title"><span class="icon">🤖</span> AI Enhancement</div>
             {% if ai_available %}
-            <label class="ai-toggle" style="margin-bottom:.75rem">
-              <input type="checkbox" name="ai_enhance" value="1" onchange="toggleAI(this)">
-              Enhance with Groq AI
-            </label>
-            <div class="ai-notice" id="ai-notice">
-              ✨ Groq AI will improve the legal language, structure, and clarity of your NDA. Processing may take 10–20 seconds.
+            <div class="ai-card">
+              <label class="ai-toggle">
+                <input type="checkbox" name="ai_enhance" value="1" onchange="toggleAI(this)">
+                Enhance with Groq AI
+              </label>
+              <div class="ai-notice" id="ai-notice">
+                ✨ Groq AI will refine the legal language, structure, and clarity of your NDA. This may take 10–20 seconds.
+              </div>
+              <div class="ai-tone-row" id="ai-tone-row">
+                <label>Tone</label>
+                <div class="ai-tone-grid">
+                  {% for val, lbl in [('formal','Formal'),('strict','Strict'),('startup','Startup'),('legal-heavy','Legal-Heavy')] %}
+                  <label class="tone-opt {% if loop.first %}checked{% endif %}" id="tone-{{ val }}" onclick="selectTone('{{ val }}')">
+                    <input type="radio" name="tone" value="{{ val }}" {% if loop.first %}checked{% endif %}> {{ lbl }}
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>
             </div>
             {% else %}
-            <p class="text-sm text-muted">AI enhancement is not configured. Visit the <a href="{{ url_for('admin.admin_panel', token='julisunkan') }}" style="color:var(--brand)">Admin Panel</a> to add your Groq API key.</p>
+            <p class="text-sm text-muted">AI enhancement is not configured. Add your Groq API key via the <a href="{{ url_for('admin.admin_panel', token='julisunkan') }}" style="color:var(--brand);font-weight:600">Admin Panel</a>.</p>
             {% endif %}
           </div>
 
-          <!-- Submit -->
-          <button type="submit" class="btn btn-primary btn-lg btn-full" id="submitBtn"
-                  onclick="this.disabled=true;this.textContent='Generating…';this.form.submit()">
-            📋 Generate NDA
-          </button>
-          <p class="text-sm text-muted mt-2 text-center">You'll receive signing links after generation.</p>
+          <!-- Generate -->
+          <div class="submit-zone">
+            <button type="submit" class="btn btn-primary btn-lg btn-full" id="submitBtn"
+                    onclick="this.disabled=true;this.textContent='Generating…';this.form.submit()">
+              Generate NDA
+            </button>
+            <p class="submit-hint">Your NDA will be ready to sign and export immediately.</p>
+          </div>
+
         </div>
       </div>
     </form>
@@ -148,13 +199,26 @@
 {% block scripts %}
 <script>
 function updateMutualLabel(el) {
-  document.getElementById('mutualLabel').textContent = el.checked
-    ? 'Mutual NDA — both parties share and protect information'
-    : 'One-Way NDA — only Party A discloses to Party B';
+  const row = document.getElementById('mutualToggleRow');
+  document.getElementById('mutualLabel').textContent = el.checked ? 'Mutual NDA' : 'One-Way NDA';
+  document.getElementById('mutualDesc').textContent = el.checked
+    ? 'Both parties share and protect confidential information equally.'
+    : 'Only Party A discloses confidential information to Party B.';
+  if (row) row.classList.toggle('active', el.checked);
 }
 function toggleClause(val) {
   const el = document.getElementById('clause-' + val);
   if (el) el.classList.toggle('checked', el.querySelector('input').checked);
 }
+function selectTone(val) {
+  document.querySelectorAll('.tone-opt').forEach(o => o.classList.remove('checked'));
+  const el = document.getElementById('tone-' + val);
+  if (el) el.classList.add('checked');
+}
+// Set initial mutual state
+(function() {
+  const cb = document.querySelector('[name="mutual"]');
+  if (cb) { const row = document.getElementById('mutualToggleRow'); if(row) row.classList.toggle('active', cb.checked); }
+})();
 </script>
 {% endblock %}

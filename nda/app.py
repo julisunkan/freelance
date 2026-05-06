@@ -26,11 +26,15 @@ def create_app():
     app.register_blueprint(audit_bp)
 
     @app.after_request
-    def add_sw_header(response):
-        if request.path.endswith('/sw.js'):
-            # Allow the SW to claim the app root (e.g. /nda/ when mounted)
+    def add_headers(response):
+        path = request.path
+        if path.endswith('/sw.js'):
             scope = (request.script_root or '') + '/'
             response.headers['Service-Worker-Allowed'] = scope
+        if '/static/' in path and (path.endswith('.css') or path.endswith('.js')):
+            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
         return response
 
     @app.errorhandler(404)

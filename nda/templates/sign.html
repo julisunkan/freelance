@@ -5,37 +5,38 @@
 <div class="page-wrap">
   <div class="container-sm">
 
-    <div style="text-align:center;margin-bottom:1.5rem">
-      <div class="hero-badge" style="margin-bottom:.75rem">✍ E-Signature Request</div>
-      <h1 style="font-size:1.5rem;font-weight:800;color:var(--brand-dark)">
-        Sign NDA as <strong>{{ nda.party_a if party == 'a' else nda.party_b }}</strong>
-      </h1>
-      <p class="text-muted text-sm mt-1">Between {{ nda.party_a }} &amp; {{ nda.party_b }}</p>
+    <div class="page-header">
+      <div class="page-header-text">
+        <div class="page-title">E-Signature Request</div>
+        <div class="page-subtitle">
+          Signing as <strong>{{ nda.party_a if party == 'a' else nda.party_b }}</strong>
+          &nbsp;·&nbsp; Between {{ nda.party_a }} &amp; {{ nda.party_b }}
+        </div>
+      </div>
     </div>
 
     {% if already_signed %}
-    <div class="card text-center">
+    <div class="card text-center" style="padding:3rem 2rem">
       {% if locked %}
-        <div style="font-size:3rem;margin-bottom:.75rem">🔒</div>
-        <h2 style="color:var(--brand-dark);margin-bottom:.5rem">NDA Fully Signed</h2>
-        <p class="text-muted">Both parties have signed. This NDA is now locked and complete.</p>
+        <div style="font-size:2.5rem;margin-bottom:.75rem">🔒</div>
+        <div style="font-size:1.15rem;font-weight:800;color:var(--brand-dark);margin-bottom:.5rem">NDA Fully Signed</div>
+        <p class="text-muted text-sm">Both parties have signed. This NDA is now locked and complete.</p>
       {% else %}
-        <div style="font-size:3rem;margin-bottom:.75rem">✅</div>
-        <h2 style="color:var(--brand-dark);margin-bottom:.5rem">Already Signed</h2>
-        <p class="text-muted">You have already submitted your signature. Waiting for the other party.</p>
+        <div style="font-size:2.5rem;margin-bottom:.75rem">✅</div>
+        <div style="font-size:1.15rem;font-weight:800;color:var(--brand-dark);margin-bottom:.5rem">Already Signed</div>
+        <p class="text-muted text-sm">You have already submitted your signature. Waiting for the other party.</p>
       {% endif %}
-      <div style="margin-top:1.25rem">
-        <a href="{{ url_for('main.view_nda', public_id=nda.public_id) }}"
-           class="btn btn-primary">View NDA</a>
+      <div style="margin-top:1.5rem">
+        <a href="{{ url_for('main.view_nda', public_id=nda.public_id) }}" class="btn btn-primary">View NDA</a>
       </div>
     </div>
 
     {% else %}
 
-    <!-- NDA preview (scrollable) -->
-    <div class="card" style="max-height:420px;overflow-y:auto;margin-bottom:1.25rem">
+    <!-- NDA preview -->
+    <div class="card" style="max-height:400px;overflow-y:auto">
       <div class="card-title"><span class="icon">📄</span> NDA Content — Please Read Carefully</div>
-      <div style="font-size:.88rem;line-height:1.65">{{ nda.nda_html | safe }}</div>
+      <div style="font-size:.875rem;line-height:1.7">{{ nda.nda_html | safe }}</div>
     </div>
 
     <!-- Signature -->
@@ -49,9 +50,9 @@
       <p class="sign-hint">Draw your signature above</p>
 
       <div class="flex gap-2 mt-3" style="justify-content:flex-end">
-        <button class="btn btn-outline btn-sm" onclick="clearSignature()">Clear</button>
-        <button class="btn btn-success" id="signBtn" onclick="submitSignature()">
-          ✓ Submit Signature
+        <button class="btn btn-outline btn-sm" type="button" onclick="clearSignature()">Clear</button>
+        <button class="btn btn-primary" id="signBtn" type="button" onclick="submitSignature()">
+          Submit Signature
         </button>
       </div>
 

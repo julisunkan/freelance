@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}NDA Generator AI{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2">
   <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
   <meta name="theme-color" content="#4f46e5">
   <meta name="description" content="Generate, sign, and export professional NDAs with AI enhancement.">
@@ -14,9 +16,10 @@
 <nav class="navbar">
   <a href="{{ url_for('main.index') }}" class="navbar-brand">
     <span class="logo-icon">📋</span>
-    <span>NDA Generator AI</span>
+    <span>NDA Generator</span>
   </a>
   <div class="navbar-actions">
+    <span class="navbar-pill">AI-Powered</span>
   </div>
 </nav>
 
