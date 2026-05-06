@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block title %}Admin — NDA Generator AI{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <div class="container">
+
+    <div class="flex justify-between align-center flex-wrap gap-3 mb-3">
+      <div>
+        <h1 style="font-size:1.4rem;font-weight:800;color:var(--brand-dark)">⚙ Admin Panel</h1>
+        <p class="text-sm text-muted">AI configuration and system overview</p>
+      </div>
+      <a href="/" class="btn btn-outline btn-sm">← Back to App</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-row">
+      <div class="stat-box"><div class="val">{{ total }}</div><div class="lbl">Total NDAs</div></div>
+      <div class="stat-box"><div class="val">{{ signed }}</div><div class="lbl">Signed</div></div>
+      <div class="stat-box"><div class="val">{{ templates|length }}</div><div class="lbl">Templates</div></div>
+      <div class="stat-box">
+        <div class="val">{% if settings.get('groq_api_key') %}✅{% else %}❌{% endif %}</div>
+        <div class="lbl">AI Status</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start">
+
+      <!-- Settings -->
+      <div class="card">
+        <div class="card-title"><span class="icon">🤖</span> Groq AI Configuration</div>
+        <form method="POST" action="/julisunkan/settings">
+          <input type="hidden" name="token" value="{{ token }}">
+
+          <div class="settings-grid">
+            <div class="form-group">
+              <label>Groq API Key</label>
+              <input type="password" name="groq_api_key" id="groqKey"
+                     value="{{ settings.get('groq_api_key', '') }}"
+                     placeholder="gsk_...">
+              <button type="button" class="btn btn-outline btn-sm mt-1"
+                      onclick="toggleGroqKey()">👁 Show / Hide</button>
+            </div>
+
+            <div class="form-group">
+              <label>Groq Model</label>
+              <select name="groq_model">
+                {% for m in ['llama-3.3-70b-versatile','llama-3.1-70b-versatile','llama3-70b-8192','mixtral-8x7b-32768','gemma2-9b-it'] %}
+                <option value="{{ m }}" {% if settings.get('groq_model', 'llama-3.3-70b-versatile') == m %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>AI Enhancement</label>
+              <select name="ai_enabled">
+                <option value="true"  {% if settings.get('ai_enabled') == 'true' %}selected{% endif %}>Enabled</option>
+                <option value="false" {% if settings.get('ai_enabled', 'false') == 'false' %}selected{% endif %}>Disabled</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Default Tone</label>
+              <select name="default_tone">
+                {% for t in ['formal','strict','startup','legal-heavy'] %}
+                <option value="{{ t }}" {% if settings.get('default_tone', 'formal') == t %}selected{% endif %}>{{ t|capitalize }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">💾 Save Settings</button>
+        </form>
+
+        <hr class="divider">
+
+        <div class="card-title"><span class="icon">ℹ</span> Access Info</div>
+        <div class="code-info">/julisunkan?token=julisunkan</div>
+
+        {% if settings.get('groq_api_key') %}
+        <div class="notif notif-success" style="animation:none;margin-top:.75rem;font-size:.85rem">
+          <span class="notif-icon">✓</span>
+          <span class="notif-msg"><strong>AI Ready.</strong> Groq API key is configured. AI enhancement is {{ settings.get('ai_enabled', 'false') }}.</span>
+        </div>
+        {% else %}
+        <div class="notif notif-warning" style="animation:none;margin-top:.75rem;font-size:.85rem">
+          <span class="notif-icon">⚠</span>
+          <span class="notif-msg">No Groq API key configured. Get one free at <a href="https://console.groq.com" target="_blank">console.groq.com</a>.</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Info sidebar -->
+      <div>
+        <div class="card">
+          <div class="card-title"><span class="icon">📑</span> Templates ({{ templates|length }})</div>
+          <div style="max-height:240px;overflow-y:auto">
+            {% for t in templates %}
+            <div class="flex align-center gap-2 mb-1" style="font-size:.82rem">
+              <span style="width:8px;height:8px;border-radius:50%;background:{{ t.color }};flex-shrink:0;display:inline-block"></span>
+              <span>{{ t.name }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="icon">🕐</span> Recent NDAs</div>
+          {% if recent %}
+          {% for r in recent[:6] %}
+          <div style="font-size:.82rem;padding:.4rem 0;border-bottom:1px solid var(--border)">
+            <a href="/nda/{{ r.public_id }}" style="color:var(--brand);font-weight:600">{{ r.party_a }} &amp; {{ r.party_b }}</a>
+            <div class="flex align-center gap-1 mt-1">
+              <span class="status-pill status-{{ r.status }}" style="font-size:.7rem;padding:.15rem .5rem">{{ r.status }}</span>
+              <span class="text-muted">{{ r.created_at[:10] if r.created_at else '' }}</span>
+            </div>
+          </div>
+          {% endfor %}
+          {% else %}
+          <p class="text-muted text-sm">No NDAs yet.</p>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleGroqKey() {
+  const el = document.getElementById('groqKey');
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+</script>
+{% endblock %}

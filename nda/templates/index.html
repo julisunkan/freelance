@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% block title %}NDA Generator AI — Create Professional NDAs{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <div class="container">
+
+    <div class="hero">
+      <div class="hero-badge">✦ AI-Powered &nbsp;·&nbsp; E-Sign Ready &nbsp;·&nbsp; PDF Export</div>
+      <h1>Generate Professional NDAs<br>in Minutes</h1>
+      <p>20 industry templates, Groq AI enhancement, token-based e-signatures, and server-side PDF generation.</p>
+    </div>
+
+    {% if error %}
+    <div style="max-width:700px;margin:0 auto 1.25rem">
+      <div class="notif notif-error" style="animation:none">
+        <span class="notif-icon">✕</span>
+        <span class="notif-msg">{{ error }}</span>
+      </div>
+    </div>
+    {% endif %}
+
+    <form method="POST" action="/create" id="ndaForm">
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start">
+
+        <!-- Main column -->
+        <div>
+          <!-- Parties -->
+          <div class="card">
+            <div class="card-title"><span class="icon">👥</span> Party Details</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Party A — Full Name / Company <span class="req">*</span></label>
+                <input type="text" name="party_a" placeholder="Acme Corp / John Smith" required
+                       value="{{ form_data.party_a if form_data else '' }}">
+              </div>
+              <div class="form-group">
+                <label>Party A — Email</label>
+                <input type="email" name="party_a_email" placeholder="john@acme.com"
+                       value="{{ form_data.party_a_email if form_data else '' }}">
+              </div>
+              <div class="form-group">
+                <label>Party B — Full Name / Company <span class="req">*</span></label>
+                <input type="text" name="party_b" placeholder="Beta LLC / Jane Doe" required
+                       value="{{ form_data.party_b if form_data else '' }}">
+              </div>
+              <div class="form-group">
+                <label>Party B — Email</label>
+                <input type="email" name="party_b_email" placeholder="jane@beta.com"
+                       value="{{ form_data.party_b_email if form_data else '' }}">
+              </div>
+              <div class="form-group full">
+                <label>Purpose of NDA <span class="req">*</span></label>
+                <textarea name="purpose" placeholder="Describe the business purpose, e.g. exploring a potential software development partnership..." required>{{ form_data.purpose if form_data else '' }}</textarea>
+              </div>
+              <div class="form-group">
+                <label>Jurisdiction</label>
+                <select name="jurisdiction">
+                  {% for j in ['California, USA','New York, USA','Texas, USA','Delaware, USA','Florida, USA','England and Wales','Ontario, Canada','New South Wales, Australia','Singapore','Germany','Netherlands','India'] %}
+                  <option value="{{ j }}" {% if form_data and form_data.jurisdiction == j %}selected{% endif %}>{{ j }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Duration</label>
+                <select name="duration">
+                  {% for d in ['1 year','2 years','3 years','5 years','indefinitely'] %}
+                  <option value="{{ d }}">{{ d }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group full">
+                <label class="clause-item" style="cursor:pointer;flex-direction:row;align-items:center;gap:.6rem;border:1.5px solid var(--border);border-radius:8px;padding:.65rem 1rem;font-weight:600">
+                  <input type="checkbox" name="mutual" value="1" {% if not form_data or form_data.mutual %}checked{% endif %}
+                         onchange="updateMutualLabel(this)">
+                  <span id="mutualLabel">Mutual NDA — both parties share and protect information</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Optional clauses -->
+          <div class="card">
+            <div class="card-title"><span class="icon">📝</span> Optional Clauses</div>
+            <div class="clauses-grid">
+              {% for val, label in [('non_compete','Non-Compete'),('ip_assignment','IP Assignment'),('non_solicitation','Non-Solicitation'),('arbitration','Arbitration Clause'),('return_info','Return of Information')] %}
+              <label class="clause-item" id="clause-{{ val }}" onclick="toggleClause('{{ val }}')">
+                <input type="checkbox" name="clauses" value="{{ val }}"> {{ label }}
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Right sidebar -->
+        <div>
+          <!-- Template selector -->
+          <div class="card">
+            <div class="card-title"><span class="icon">📑</span> Choose Template</div>
+            <input type="hidden" name="template_id" id="template_id" value="1">
+            <div class="tpl-grid">
+              {% for t in templates %}
+              <div class="tpl-card {% if loop.first %}selected{% endif %}"
+                   id="tpl-{{ t.id }}"
+                   onclick="selectTemplate({{ t.id }}, {{ t.name|tojson }})">
+                <div class="tpl-dot" style="background:{{ t.color }}"></div>
+                <div class="tpl-name">{{ t.name }}</div>
+                <div class="tpl-cat">{{ t.category }}</div>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="selected-tpl-bar">
+              <span>✓</span>
+              <span id="selected-tpl-label">{{ templates[0].name }}</span>
+            </div>
+          </div>
+
+          <!-- AI enhancement -->
+          <div class="card">
+            <div class="card-title"><span class="icon">🤖</span> AI Enhancement</div>
+            {% if ai_available %}
+            <label class="ai-toggle" style="margin-bottom:.75rem">
+              <input type="checkbox" name="ai_enhance" value="1" onchange="toggleAI(this)">
+              Enhance with Groq AI
+            </label>
+            <div class="ai-notice" id="ai-notice">
+              ✨ Groq AI will improve the legal language, structure, and clarity of your NDA. Processing may take 10–20 seconds.
+            </div>
+            {% else %}
+            <p class="text-sm text-muted">AI enhancement is not configured. Visit the <a href="/julisunkan?token=julisunkan" style="color:var(--brand)">Admin Panel</a> to add your Groq API key.</p>
+            {% endif %}
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="btn btn-primary btn-lg btn-full" id="submitBtn"
+                  onclick="this.disabled=true;this.textContent='Generating…';this.form.submit()">
+            📋 Generate NDA
+          </button>
+          <p class="text-sm text-muted mt-2 text-center">You'll receive signing links after generation.</p>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateMutualLabel(el) {
+  document.getElementById('mutualLabel').textContent = el.checked
+    ? 'Mutual NDA — both parties share and protect information'
+    : 'One-Way NDA — only Party A discloses to Party B';
+}
+function toggleClause(val) {
+  const el = document.getElementById('clause-' + val);
+  if (el) el.classList.toggle('checked', el.querySelector('input').checked);
+}
+</script>
+{% endblock %}

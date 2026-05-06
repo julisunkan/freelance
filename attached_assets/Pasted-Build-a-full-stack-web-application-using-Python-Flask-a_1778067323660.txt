@@ -1,0 +1,355 @@
+Build a full-stack web application using Python Flask and SQLite called:
+
+"NDA Generator – PWA with E-Sign, Templates, and Groq AI Enhancement"
+
+---
+
+# 🧠 CORE GOAL
+
+Create a production-grade NDA generator that:
+- Generates NDAs using 20 built-in templates
+- Enhances NDA text using Groq AI (LLM integration)
+- Has a secure admin page to configure Groq API settings
+- Supports e-signatures via token-based links (NO login system)
+- Generates PDFs server-side only (NO frontend blob downloads)
+- Works as a Progressive Web App (PWA)
+- Uses inline notifications only (NO popups/modals)
+- Tracks audit logs for all actions
+- Uses secure token-based document access
+
+---
+
+# 🤖 GROQ AI INTEGRATION (IMPORTANT FEATURE)
+
+## Admin Configuration Page
+
+Create a protected route:
+
+/julisunkan
+
+This page allows configuration of:
+
+- GROQ_API_KEY
+- GROQ_MODEL (e.g. llama-3.1-70b-versatile)
+- AI_ENHANCEMENT_ENABLED (true/false)
+- DEFAULT_TONE (formal / strict / startup / legal-heavy)
+
+Store config in SQLite table:
+
+CREATE TABLE settings (
+    key TEXT PRIMARY KEY,
+    value TEXT
+);
+
+---
+
+## AI USAGE (CORE LOGIC)
+
+Use Groq API to improve NDA content:
+
+### When generating NDA:
+Send prompt to Groq:
+
+- party details
+- selected template
+- clause toggles
+- jurisdiction
+- purpose
+
+### AI returns:
+- improved NDA wording
+- legally stronger phrasing
+- optional risk warnings (NOT legal advice, just suggestions)
+
+---
+
+## GROQ API CALL EXAMPLE (Python)
+
+Use requests:
+
+POST https://api.groq.com/openai/v1/chat/completions
+
+Headers:
+Authorization: Bearer {GROQ_API_KEY}
+
+Model:
+- configurable from admin panel
+
+---
+
+## AI PROMPT STRUCTURE
+
+SYSTEM:
+"You are a legal document assistant. Improve NDA clarity, structure, and professionalism. Do NOT provide legal advice."
+
+USER:
+Generate NDA based on:
+- Party A: {party_a}
+- Party B: {party_b}
+- Purpose: {purpose}
+- Jurisdiction: {jurisdiction}
+- Template: {template_name}
+- Clauses: {selected_clauses}
+
+Return improved NDA HTML content.
+
+---
+
+# 🏗️ TECH STACK
+
+- Python Flask
+- SQLite
+- Jinja2 templates
+- WeasyPrint or ReportLab for PDF generation
+- Vanilla JavaScript (no frameworks)
+- Groq AI API integration
+- Service Worker for PWA
+
+---
+
+# 🗄️ DATABASE DESIGN
+
+## nda table
+- id (pk)
+- public_id (unique)
+- party_a
+- party_b
+- party_a_email
+- party_b_email
+- purpose
+- jurisdiction
+- template_id
+- nda_html (AI-enhanced HTML)
+- signature_a (base64)
+- signature_b (base64)
+- sign_token_a
+- sign_token_b
+- status (draft/sent/partial/signed/locked)
+- ip_a
+- ip_b
+- created_at
+- signed_at
+
+## audit_log table
+- id
+- nda_id
+- action
+- ip_address
+- user_agent
+- timestamp
+
+## settings table
+- key
+- value
+
+---
+
+# 📄 20 TEMPLATE SYSTEM
+
+Implement 20 NDA templates:
+
+Startup, Corporate, Freelance, Legal, Healthcare, Finance, etc.
+
+Each template:
+- Jinja2 HTML file
+- unique color theme
+- clause toggle support
+
+AI should enhance whichever template is selected.
+
+---
+
+# ✍️ E-SIGN SYSTEM (NO LOGIN)
+
+Generate for each NDA:
+- public_id
+- sign_token_a
+- sign_token_b
+
+Routes:
+- /nda/view/<public_id>
+- /nda/sign/a/<token>
+- /nda/sign/b/<token>
+
+Store:
+- signature image (canvas base64)
+- IP address
+- timestamp
+
+Lock NDA after both signatures.
+
+---
+
+# 📤 PDF GENERATION (SERVER-SIDE ONLY)
+
+Route:
+- /nda/download/<public_id>
+
+Use WeasyPrint or ReportLab.
+
+Must include:
+- AI-enhanced NDA text
+- signatures
+- timestamps
+- audit info
+
+Return via:
+Flask send_file(..., as_attachment=True)
+
+NO frontend blob downloads allowed.
+
+---
+
+# 📱 PWA REQUIREMENTS
+
+Add:
+
+## manifest.json
+- name: NDA Generator AI
+- short_name: NDA AI
+- icons:
+  - 192x192
+  - 512x512
+  - maskable 512x512
+- theme_color: #4f46e5
+- display: standalone
+
+## service worker
+- cache static assets
+- enable offline UI access
+
+App must be installable on mobile.
+
+---
+
+# 🎨 UI REQUIREMENTS
+
+## INLINE NOTIFICATIONS ONLY
+
+NO:
+- alert()
+- popups
+- modals
+
+Use:
+
+<div id="notifications"></div>
+
+Function:
+notify(message, type)
+
+Types:
+- success
+- error
+- info
+
+Auto dismiss after 5 seconds.
+
+---
+
+# 🔐 SECURITY MODEL
+
+- No login system
+- Token-based access only
+- Random secure tokens
+- NDA view via public_id only
+- Signing restricted to tokens
+- Store IP + user-agent logs
+
+---
+
+# 🤖 AI FEATURE USAGE
+
+AI should be used in:
+
+## 1. NDA generation
+- Improve legal language
+- Clean formatting
+- Enhance structure
+
+## 2. Clause optimization
+- Suggest missing clauses
+- Improve clarity
+
+## 3. Optional “Risk Notes”
+- Non-legal advisory warnings (safe wording only)
+
+---
+
+# ⚙️ CORE ROUTES
+
+/
+- form UI
+
+/create
+- generate NDA (calls Groq AI if enabled)
+
+/nda/<public_id>
+- view NDA
+
+/nda/sign/a/<token>
+/nda/sign/b/<token>
+
+/nda/download/<public_id>
+
+/julisunkan
+- admin AI config page (Groq settings)
+
+/audit/<public_id>
+
+---
+
+# 📊 STATUS FLOW
+
+draft → sent → partial → signed → locked
+
+---
+
+# 📁 PROJECT STRUCTURE
+
+/nda_generator
+  app.py
+  /templates
+     index.html
+     form.html
+     view_nda.html
+     /ndas (20 templates)
+     admin.html (/julisunkan)
+  /static
+     manifest.json
+     sw.js
+     style.css
+     icons/
+     signature_pad.js
+  /utils
+     groq_ai.py
+     pdf_generator.py
+  /generated
+     pdf files
+
+---
+
+# 📧 EMAIL FLOW (OPTIONAL)
+
+If email configured:
+- send signing links to both parties
+
+Else:
+- display links in UI
+
+---
+
+# 📈 FINAL OUTPUT REQUIREMENTS
+
+Build a fully working Flask application that:
+- Runs instantly in Replit
+- Uses SQLite storage
+- Uses Groq AI for NDA enhancement
+- Has 20 templates with unique styling
+- Supports token-based signing
+- Generates PDFs server-side only
+- Is installable as a PWA
+- Uses inline notifications only
+- Has admin AI configuration page (/julisunkan)
+
+Make UI modern, responsive, and SaaS-like.

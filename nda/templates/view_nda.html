@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block title %}NDA — {{ nda.party_a }} & {{ nda.party_b }}{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <div class="container">
+
+    <!-- Header -->
+    <div class="flex justify-between align-center flex-wrap gap-3 mb-3">
+      <div>
+        <h1 style="font-size:1.5rem;font-weight:800;color:var(--brand-dark)">
+          {{ nda.party_a }} &amp; {{ nda.party_b }}
+        </h1>
+        <div class="flex align-center gap-2 mt-1">
+          <span class="status-pill status-{{ nda.status }}">{{ nda.status }}</span>
+          <span class="text-sm text-muted">Created {{ nda.created_at[:10] }}</span>
+          <span class="text-sm text-muted">·</span>
+          <a href="/audit/{{ nda.public_id }}" class="text-sm" style="color:var(--brand)">View Audit Log</a>
+        </div>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <a href="/" class="btn btn-outline btn-sm">← New NDA</a>
+        <a href="/nda/download/{{ nda.public_id }}" class="btn btn-primary btn-sm">⬇ Download PDF</a>
+      </div>
+    </div>
+
+    <div class="nda-layout">
+
+      <!-- NDA document -->
+      <div class="card">
+        <div class="nda-doc-content">
+          {{ nda.nda_html | safe }}
+        </div>
+
+        {% if nda.signature_a or nda.signature_b %}
+        <hr class="divider">
+        <div class="card-title"><span class="icon">✍</span> Collected Signatures</div>
+        <div class="sig-columns">
+          <div>
+            <p class="fw-bold mb-2">{{ nda.party_a }}</p>
+            {% if nda.signature_a %}
+              <img src="{{ nda.signature_a }}" class="sig-preview" alt="Signature A">
+              <p class="text-sm text-muted mt-1">Signed {{ nda.signed_at_a[:16] if nda.signed_at_a else '' }} UTC</p>
+            {% else %}
+              <p class="text-muted text-sm">Not yet signed</p>
+            {% endif %}
+          </div>
+          <div>
+            <p class="fw-bold mb-2">{{ nda.party_b }}</p>
+            {% if nda.signature_b %}
+              <img src="{{ nda.signature_b }}" class="sig-preview" alt="Signature B">
+              <p class="text-sm text-muted mt-1">Signed {{ nda.signed_at_b[:16] if nda.signed_at_b else '' }} UTC</p>
+            {% else %}
+              <p class="text-muted text-sm">Not yet signed</p>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Sidebar -->
+      <div class="nda-sidebar">
+
+        <!-- Status -->
+        <div class="card">
+          <div class="card-title"><span class="icon">📊</span> Status</div>
+          <div class="flex align-center gap-2 mb-2">
+            <span class="status-pill status-{{ nda.status }}">{{ nda.status }}</span>
+          </div>
+          <div class="text-sm text-muted">
+            {% if nda.status == 'draft' %}NDA created. Share signing links below.
+            {% elif nda.status == 'sent' %}Signing links have been viewed.
+            {% elif nda.status == 'partial' %}One party has signed. Waiting for the other.
+            {% elif nda.status == 'signed' %}✅ Both parties have signed. NDA is complete.
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Signing links -->
+        {% if nda.status != 'signed' %}
+        <div class="card">
+          <div class="card-title"><span class="icon">✍</span> Signing Links</div>
+          <p class="text-sm text-muted mb-2">Share these links with each party to collect their e-signature.</p>
+
+          <p class="text-sm fw-bold mb-1">{{ nda.party_a }}</p>
+          {% if nda.signature_a %}
+            <div class="notif notif-success" style="animation:none;margin-bottom:.75rem;font-size:.82rem">✓ Signed</div>
+          {% else %}
+            <div class="link-box mb-1">{{ sign_url_a }}</div>
+            <button class="btn btn-outline btn-sm btn-full mb-3"
+                    onclick="copyLink('{{ sign_url_a }}', 'Party A signing link')">📋 Copy Link</button>
+          {% endif %}
+
+          <p class="text-sm fw-bold mb-1">{{ nda.party_b }}</p>
+          {% if nda.signature_b %}
+            <div class="notif notif-success" style="animation:none;margin-bottom:.75rem;font-size:.82rem">✓ Signed</div>
+          {% else %}
+            <div class="link-box mb-1">{{ sign_url_b }}</div>
+            <button class="btn btn-outline btn-sm btn-full"
+                    onclick="copyLink('{{ sign_url_b }}', 'Party B signing link')">📋 Copy Link</button>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="card">
+          <div class="card-title"><span class="icon">⬇</span> Export</div>
+          <a href="/nda/download/{{ nda.public_id }}" class="btn btn-primary btn-full">
+            Download PDF
+          </a>
+          <p class="text-sm text-muted mt-2 text-center">
+            {% if nda.status == 'signed' %}Includes both signatures.{% else %}Partial — sign to include signatures.{% endif %}
+          </p>
+        </div>
+
+        <!-- Document info -->
+        <div class="card">
+          <div class="card-title"><span class="icon">ℹ</span> Document Info</div>
+          <table style="width:100%;font-size:.83rem;border-collapse:collapse">
+            {% for k, v in [('Document ID', nda.public_id), ('Jurisdiction', nda.jurisdiction or '—'), ('Duration', nda.duration or '—'), ('Type', 'Mutual' if nda.mutual else 'One-Way')] %}
+            <tr>
+              <td style="color:var(--muted);padding:.35rem 0;width:45%">{{ k }}</td>
+              <td style="font-weight:600;word-break:break-all">{{ v }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

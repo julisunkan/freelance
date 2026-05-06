@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Sign NDA — {{ nda.party_a }} & {{ nda.party_b }}{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <div class="container-sm">
+
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div class="hero-badge" style="margin-bottom:.75rem">
+        ✍ E-Signature Request
+      </div>
+      <h1 style="font-size:1.5rem;font-weight:800;color:var(--brand-dark)">
+        Sign NDA as <strong>{{ nda.party_a if party == 'a' else nda.party_b }}</strong>
+      </h1>
+      <p class="text-muted text-sm mt-1">
+        Between {{ nda.party_a }} &amp; {{ nda.party_b }}
+      </p>
+    </div>
+
+    {% if already_signed %}
+    <div class="card text-center">
+      {% if locked %}
+        <div style="font-size:3rem;margin-bottom:.75rem">🔒</div>
+        <h2 style="color:var(--brand-dark);margin-bottom:.5rem">NDA Fully Signed</h2>
+        <p class="text-muted">Both parties have signed. This NDA is now locked and complete.</p>
+      {% else %}
+        <div style="font-size:3rem;margin-bottom:.75rem">✅</div>
+        <h2 style="color:var(--brand-dark);margin-bottom:.5rem">Already Signed</h2>
+        <p class="text-muted">You have already submitted your signature. Waiting for the other party.</p>
+      {% endif %}
+      <div style="margin-top:1.25rem">
+        <a href="/nda/{{ nda.public_id }}" class="btn btn-primary">View NDA</a>
+      </div>
+    </div>
+
+    {% else %}
+
+    <!-- NDA preview (scrollable) -->
+    <div class="card" style="max-height:420px;overflow-y:auto;margin-bottom:1.25rem">
+      <div class="card-title"><span class="icon">📄</span> NDA Content — Please Read Carefully</div>
+      <div style="font-size:.88rem;line-height:1.65">
+        {{ nda.nda_html | safe }}
+      </div>
+    </div>
+
+    <!-- Signature -->
+    <div class="card">
+      <div class="card-title"><span class="icon">✍</span> Your Signature</div>
+      <p class="text-sm text-muted mb-2">Draw your signature in the box below using your mouse or finger.</p>
+
+      <div class="sign-canvas-wrap">
+        <canvas id="sigCanvas"></canvas>
+      </div>
+      <p class="sign-hint">Draw your signature above</p>
+
+      <div class="flex gap-2 mt-3" style="justify-content:flex-end">
+        <button class="btn btn-outline btn-sm" onclick="clearSignature()">Clear</button>
+        <button class="btn btn-success" id="signBtn"
+                onclick="submitSignature('{{ nda.sign_token_a if party == 'a' else nda.sign_token_b }}', '{{ party }}')">
+          ✓ Submit Signature
+        </button>
+      </div>
+
+      <hr class="divider">
+      <p class="text-sm text-muted">
+        By submitting your signature, you agree to be legally bound by the terms of this Non-Disclosure Agreement.
+        Your IP address and timestamp will be recorded for audit purposes.
+      </p>
+    </div>
+
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  {% if not already_signed %}
+  initSignaturePad('sigCanvas');
+  {% endif %}
+});
+</script>
+{% endblock %}

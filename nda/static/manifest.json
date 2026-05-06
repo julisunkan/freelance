@@ -1,0 +1,15 @@
+{
+  "id": "nda-generator-ai",
+  "name": "NDA Generator AI",
+  "short_name": "NDA AI",
+  "description": "Generate, sign, and export professional NDAs with AI enhancement.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f3ff",
+  "theme_color": "#4f46e5",
+  "icons": [
+    { "src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/static/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/static/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

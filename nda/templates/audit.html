@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Audit Log — {{ nda.party_a }} & {{ nda.party_b }}{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <div class="container-sm">
+
+    <div class="flex justify-between align-center flex-wrap gap-3 mb-3">
+      <div>
+        <h1 style="font-size:1.3rem;font-weight:800;color:var(--brand-dark)">🔍 Audit Log</h1>
+        <p class="text-muted text-sm">{{ nda.party_a }} &amp; {{ nda.party_b }} &nbsp;·&nbsp; ID: {{ nda.public_id }}</p>
+      </div>
+      <a href="/nda/{{ nda.public_id }}" class="btn btn-outline btn-sm">← Back to NDA</a>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📋</span> Activity ({{ logs|length }} events)</div>
+      {% if logs %}
+        {% for log in logs %}
+        <div class="audit-row">
+          <div class="audit-dot"></div>
+          <div>
+            <div class="audit-action">{{ log.action }}</div>
+            <div class="audit-meta">
+              {{ log.timestamp[:19] if log.timestamp else '' }} UTC
+              {% if log.ip_address %}&nbsp;·&nbsp; IP: {{ log.ip_address }}{% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="icon">📋</div>
+          <p>No audit events recorded yet.</p>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}
