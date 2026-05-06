@@ -1,0 +1,339 @@
+Build a full-stack web application called **"Freelancer Proposal Builder"** using **Python (Flask)** with **SQLite as the database**.
+
+The app is a single-user tool for creating, editing, exporting, and tracking freelance proposals. It must be clean, modular, and production-ready.
+
+---
+
+# 🧱 CORE REQUIREMENTS
+
+## 1. No Authentication System
+
+* DO NOT implement login or registration
+* Single-user application only
+
+---
+
+## 2. Proposal Management
+
+Users can:
+
+* Create proposals
+* Edit proposals
+* Delete proposals
+* View all proposals in a dashboard
+
+Each proposal must include:
+
+* client_name
+* project_title
+* description
+* price
+* timeline
+* status (Draft, Sent, Accepted, Rejected)
+* created_at
+
+Store in SQLite table: `proposals`
+
+---
+
+## 3. Template System
+
+* Preload 10 proposal templates
+* Store in SQLite table: `templates`
+* Users can:
+
+  * Select templates
+  * Edit template content
+
+---
+
+## 4. WYSIWYG Editor
+
+* Use Quill JS editor
+* Allow rich text editing
+* Save HTML content in SQLite
+* Support placeholders:
+
+  * {{ client_name }}
+  * {{ project_title }}
+  * {{ price }}
+
+---
+
+## 5. Custom Sections
+
+* Users can create reusable content blocks
+* Store in SQLite table: `sections`
+* Allow insertion into editor
+
+---
+
+## 6. AI Integration (Groq)
+
+Use Groq API:
+
+* Model: llama3-70b-8192
+
+Features:
+
+* Generate full proposal from input data
+* Improve existing proposal text
+* Make writing more persuasive and professional
+
+API key must be stored in SQLite `settings` table.
+
+---
+
+## 7. Admin Panel (Secure, No Login)
+
+Route:
+
+```id="adminroute"
+/julisunkan
+```
+
+* DO NOT require login
+* Protect using:
+
+```python id="adminsecret"
+ADMIN_SECRET = "julisunkan"
+```
+
+Access:
+
+```id="admintoken"
+/julisunkan?token=julisunkan
+```
+
+Admin can:
+
+* Set/update Groq API key
+* Configure system settings
+* View and manage reported proposals
+
+---
+
+## 8. Proposal Reporting System
+
+All proposals must be reportable.
+
+User features:
+
+* “Report Proposal” button
+* Optional reason input
+
+Store in SQLite table: `reports`
+
+Fields:
+
+* id
+* proposal_id
+* reason
+* status (Open, Reviewed, Ignored)
+* created_at
+
+Admin can:
+
+* View all reports
+* Filter reports by status
+* Mark as reviewed or ignored
+
+---
+
+## 9. Proposal Scoring System
+
+Score proposals (0–100) based on:
+
+* clarity
+* structure
+* pricing presence
+* call-to-action strength
+
+Return:
+
+* score
+* feedback list
+
+---
+
+## 10. EXPORT SYSTEM (IMPORTANT UPDATE)
+
+All generated or saved proposals must be exportable in **3 formats**:
+
+### 📄 1. PDF Export
+
+* Use WeasyPrint or pdfkit
+* Server-side generation only
+* Download via Flask `send_file`
+
+---
+
+### 📝 2. DOCX Export
+
+* Use `python-docx`
+* Generate formatted Word document
+* Include:
+
+  * headings
+  * paragraphs
+  * pricing section
+
+---
+
+### 📃 3. TXT Export
+
+* Plain text version of proposal
+* Strip HTML tags safely
+* Lightweight download
+
+---
+
+### Export Rules:
+
+* All exports must be generated on the server
+* DO NOT use browser Blob downloads
+* Ensure filenames are clean:
+
+  * proposal_<id>.pdf
+  * proposal_<id>.docx
+  * proposal_<id>.txt
+
+---
+
+## 11. Dashboard
+
+* Display all proposals
+* Filter by status
+* Show analytics:
+
+  * total proposals
+  * acceptance rate
+
+---
+
+# 📱 PWA SUPPORT
+
+* Add `manifest.json`
+* Add service worker (`sw.js`)
+* Cache static assets only
+* Enable offline UI shell access
+
+---
+
+# 🔔 NOTIFICATIONS SYSTEM
+
+* DO NOT use alerts or popups
+* Use inline notification system:
+
+  * top-right notification container
+  * success/error messages
+* Integrate Flask flash messages into UI
+
+---
+
+# 🗄️ SQLITE DATABASE SCHEMA
+
+## proposals
+
+* id
+* client_name
+* project_title
+* description
+* price
+* timeline
+* status
+* created_at
+
+## templates
+
+* id
+* name
+* content
+
+## sections
+
+* id
+* name
+* content
+
+## reports
+
+* id
+* proposal_id
+* reason
+* status
+* created_at
+
+## settings
+
+* id
+* key
+* value
+
+---
+
+# 📂 PROJECT STRUCTURE
+
+app.py
+models.py
+routes/
+services/
+templates/
+static/
+
+Services:
+
+* ai_service.py
+* pdf_service.py
+* docx_service.py
+* txt_service.py
+* scoring_service.py
+* report_service.py
+
+---
+
+# 🎨 FRONTEND
+
+Use Bootstrap or Tailwind CSS.
+
+Pages:
+
+* Dashboard
+* Proposal editor
+* Template selector
+* Admin panel (/julisunkan)
+* Reports page (admin)
+* Export options UI (PDF / DOCX / TXT buttons)
+
+---
+
+# ⚙️ SECURITY RULES
+
+* Admin route protected using `ADMIN_SECRET = "julisunkan"`
+* Never expose API keys in frontend
+* Sanitize HTML input from editor
+* Validate all user input
+
+---
+
+# 🚀 BONUS FEATURES (Optional)
+
+* Shareable public proposal links
+* Track proposal views
+* Export history log per proposal
+
+---
+
+# 📦 OUTPUT REQUIREMENTS
+
+Provide:
+
+* Full working Flask project
+* requirements.txt including:
+
+  * flask
+  * sqlite3 (built-in)
+  * weasyprint or pdfkit
+  * python-docx
+* Setup instructions
+* Clean modular structure
