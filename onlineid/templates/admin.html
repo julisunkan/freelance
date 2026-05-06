@@ -24,6 +24,25 @@
   <main class="admin-main">
     <div class="admin-toolbar">
       <h1>All ID Records <span class="count-badge">{{ records | length }}</span></h1>
+      {% if records %}
+      <div class="batch-actions">
+        <form method="POST" action="{{ request.script_root }}/julisunkan/batch-ai-fix?token={{ token }}" id="batchFixForm">
+          <button type="submit" class="btn btn-ai btn-batch" id="batchFixBtn">
+            🧠 AI Auto-Fix All
+          </button>
+        </form>
+        <form method="POST" action="{{ request.script_root }}/julisunkan/batch-ai-risk?token={{ token }}" id="batchRiskForm">
+          <button type="submit" class="btn btn-ai btn-batch" id="batchRiskBtn">
+            ⚖️ Recalculate All Risks
+          </button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+
+    <div id="batchProgress" class="batch-progress" style="display:none">
+      <div class="batch-progress-bar"><div class="batch-progress-fill" id="batchFill"></div></div>
+      <p class="batch-progress-label" id="batchLabel">Processing records with Groq AI…</p>
     </div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -78,5 +97,30 @@
     </div>
     {% endif %}
   </main>
+
+  <script>
+    function showProgress(formId, btnId, label) {
+      const form = document.getElementById(formId);
+      const btn  = document.getElementById(btnId);
+      if (!form || !btn) return;
+      form.addEventListener('submit', function () {
+        btn.disabled = true;
+        btn.textContent = 'Processing…';
+        const prog = document.getElementById('batchProgress');
+        const fill = document.getElementById('batchFill');
+        const lbl  = document.getElementById('batchLabel');
+        prog.style.display = 'block';
+        lbl.textContent = label;
+        let pct = 0;
+        const iv = setInterval(function () {
+          pct = Math.min(pct + Math.random() * 8, 90);
+          fill.style.width = pct + '%';
+        }, 400);
+        form.addEventListener('submit', function () { clearInterval(iv); }, { once: true });
+      });
+    }
+    showProgress('batchFixForm',  'batchFixBtn',  'Running AI Auto-Fix on all records…');
+    showProgress('batchRiskForm', 'batchRiskBtn', 'Recalculating risk scores for all records…');
+  </script>
 </body>
 </html>

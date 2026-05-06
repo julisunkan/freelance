@@ -133,6 +133,16 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .hint { color: var(--muted); font-size: 0.82rem; margin-top: 0.3rem; display: block; }
 .hint a { color: var(--accent); }
 
+/* Batch Actions */
+.batch-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.btn-batch { width: auto; padding: 0.55rem 1.1rem; font-size: 0.88rem; }
+
+/* Batch Progress Bar */
+.batch-progress { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 1.2rem; box-shadow: var(--shadow); }
+.batch-progress-bar { height: 10px; background: var(--border); border-radius: 999px; overflow: hidden; margin-bottom: 0.5rem; }
+.batch-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #7c3aed, #3b82f6); border-radius: 999px; transition: width 0.4s ease; }
+.batch-progress-label { font-size: 0.85rem; color: var(--muted); margin: 0; }
+
 /* Empty State */
 .empty-state { text-align: center; padding: 3rem; color: var(--muted); }
 .empty-state a { color: var(--accent); }

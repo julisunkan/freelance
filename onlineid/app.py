@@ -280,6 +280,88 @@ def admin_settings():
         db.close()
 
 
+@app.route('/julisunkan/batch-ai-fix', methods=['POST'])
+def admin_batch_ai_fix():
+    if not _check_admin():
+        abort(403)
+    db = SessionLocal()
+    try:
+        settings = get_settings(db)
+        api_key = settings.groq_api_key if settings else ''
+        if not api_key:
+            flash('No Groq API key configured. Add it in Settings first.', 'danger')
+            return redirect(url_for('admin', token=ADMIN_TOKEN))
+
+        records = db.query(IDRecord).order_by(IDRecord.created_at.desc()).all()
+        fixed = 0
+        failed = 0
+        for record in records:
+            if not record.extracted_text:
+                continue
+            result = ai_extract_and_fix(record.extracted_text, api_key)
+            if result:
+                structured = {
+                    'full_name':    result.get('name', ''),
+                    'date_of_birth': result.get('dob', ''),
+                    'id_number':    result.get('id_number', ''),
+                    'expiry_date':  result.get('expiry_date', ''),
+                    'notes':        result.get('notes', ''),
+                }
+                record.structured_data = json.dumps(structured)
+                fixed += 1
+            else:
+                failed += 1
+        db.commit()
+
+        if fixed:
+            flash(f'Batch AI fix complete — {fixed} record(s) updated, {failed} skipped.', 'success')
+        else:
+            flash('No records were updated. Ensure your Groq API key is valid.', 'warning')
+        return redirect(url_for('admin', token=ADMIN_TOKEN))
+    finally:
+        db.close()
+
+
+@app.route('/julisunkan/batch-ai-risk', methods=['POST'])
+def admin_batch_ai_risk():
+    if not _check_admin():
+        abort(403)
+    db = SessionLocal()
+    try:
+        settings = get_settings(db)
+        api_key = settings.groq_api_key if settings else ''
+        if not api_key:
+            flash('No Groq API key configured. Add it in Settings first.', 'danger')
+            return redirect(url_for('admin', token=ADMIN_TOKEN))
+
+        records = db.query(IDRecord).order_by(IDRecord.created_at.desc()).all()
+        updated = 0
+        failed = 0
+        for record in records:
+            if not record.extracted_text:
+                continue
+            structured = {}
+            try:
+                structured = json.loads(record.structured_data or '{}')
+            except Exception:
+                pass
+            result = ai_risk_analysis(record.extracted_text, structured, api_key)
+            if result and result.get('risk_level') in ('LOW', 'MEDIUM', 'HIGH'):
+                record.risk_level = result['risk_level']
+                updated += 1
+            else:
+                failed += 1
+        db.commit()
+
+        if updated:
+            flash(f'Batch risk recalculation complete — {updated} record(s) updated, {failed} skipped.', 'success')
+        else:
+            flash('No records were updated. Ensure your Groq API key is valid.', 'warning')
+        return redirect(url_for('admin', token=ADMIN_TOKEN))
+    finally:
+        db.close()
+
+
 @app.route('/julisunkan/delete/<int:record_id>', methods=['POST'])
 def admin_delete(record_id):
     if not _check_admin():
