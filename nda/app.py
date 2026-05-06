@@ -31,10 +31,9 @@ def create_app():
         if path.endswith('/sw.js'):
             scope = (request.script_root or '') + '/'
             response.headers['Service-Worker-Allowed'] = scope
-        if '/static/' in path and (path.endswith('.css') or path.endswith('.js')):
-            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-            response.headers['Pragma'] = 'no-cache'
-            response.headers['Expires'] = '0'
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
         return response
 
     @app.errorhandler(404)
